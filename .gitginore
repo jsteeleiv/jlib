@@ -1,0 +1,16 @@
+.vscode/
+notes/
+build/
+
+pycache/
+*.pyc
+
+*.o
+*.out
+*.a
+
+bin/
+dist/
+
+.DS_Store
+Thumbs.db
