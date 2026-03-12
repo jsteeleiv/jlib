@@ -55,7 +55,7 @@ LinkedList new_ll(){
     return ll;
 }
 
-// void ll_ins(LinkedList *ll, int idx, const char *data){
+void ll_ins(LinkedList *ll, int idx, const char *data){
 //     Node *insert = (Node*)malloc(sizeof(Node));
 //     if (insert == NULL) return;
 
@@ -63,7 +63,7 @@ LinkedList new_ll(){
 //     insert->next = (*node);
 //     (*node) = insert;
     
-// }
+}
 
 void ll_add(LinkedList *ll, const char *data){
     if (ll->head == NULL) 
