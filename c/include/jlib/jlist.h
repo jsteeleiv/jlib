@@ -2,7 +2,7 @@
 #define JLIST_H
 
 #include <stdlib.h>
-#include <jlib/jlogs.h>
+#include <jlib/jlib.h>
 
 typedef struct Node {
     uintptr_t xord;
@@ -11,8 +11,6 @@ typedef struct Node {
     int value;
     const char *data;
     bool seen;
-    
-
 } node;
 
 typedef struct LinkedList {
@@ -21,7 +19,6 @@ typedef struct LinkedList {
     int size;
     const char *data;
     Error err;
-
 } list;
 
 #define ll_add_xor(v) _ll_add_xor(v, #v)
@@ -33,6 +30,7 @@ void ll_add(LinkedList *ll, const char *data);
 void ll_ins(LinkedList *ll, int idx, const char *data);
 void _ll_add_xor(LinkedList *ll, int value, const char *name);
 
+/* ! IMPLEMENTATION ! */
 
 #ifdef JLIST_IMPL
 
