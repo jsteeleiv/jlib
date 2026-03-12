@@ -1,5 +1,5 @@
-#ifndef JLIB_TIME_H
-#define JLIB_TIME_H
+#ifndef JTIME_H
+#define JTIME_H
 
 // getnow() + timestamp types
 #include <time.h>
@@ -19,7 +19,7 @@ typedef struct Timestamp {
 
 struct tm getnow(void);
 
-#ifdef JLIB_TIME_IMPL
+#ifdef JTIME_IMPL
 
 tm getnow(){
     time_t now = time(NULL);
@@ -33,7 +33,7 @@ tm getnow(){
     return out; // return by value (copy)
 }
 
-#endif /* JLIB_TIME_IMPL */
+#endif /* JTIME_IMPL */
 
 
-#endif /* JLIB_TIME_H */
+#endif /* JTIME_H */
