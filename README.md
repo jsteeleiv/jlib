@@ -24,7 +24,7 @@ The goal is not to compete with large frameworks or production-grade libraries, 
 # structure
 Each language lives in it's own directory.
 
-## C libraries
+##### C libraries
 
 Each module has its own header and follows a single-header implementation pattern.
 > inspired by [nothings/stb](https://github.com/nothings/stb).
