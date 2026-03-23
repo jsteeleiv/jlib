@@ -16,6 +16,27 @@ typedef struct Timestamp {
     signed char sec;
 } time_st;
 
+// place the highest value into a var of type time_t {(8bytes)-1}
+time_t max_v = 0x7FFFFFFFl;
+// pass it to ctime(){convert time} to convert it into an ascii str
+//char *str = ctime(&max_v);
+
+// print the str, 
+//printf("max date = %s\n", str);
+//look at the definition of time_t, (/usr/include/time.h)
+// time_t == __int64_t == ll == long long int == 64 bits == 8 bytes
+    /* code */
+
+//? For how many years into the future does time_t last?
+
+	/* amend */
+
+// obtain current time by calling time()
+//	char *now = asctime(time(*(&max_v)));
+// call difftime() to get # of sec { now .. max } value of time_t
+// format value into years, months, weeks, days, hours, mins
+// print it
+//	printf("now = %s\n", now);
 
 struct tm getnow(void);
 
