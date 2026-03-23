@@ -15,10 +15,13 @@
   <span style="font-size:1.5em; font-weight:bold;">𝒜</span> growing collection of small, focused utilities written in the languages I use over time.
 </p>
 
-The goal is not to compete with large frameworks or production-grade libraries, but to build a foundational toolkit that reflects the specifics of what I needed to automate or "prettify".
+The goal is not to compete with large frameworks or production-grade libraries, but to build a foundational toolkit that reflects the specifics of what I want to improve, create, or "prettify".
 
-
+So, with that said
 > Welcome to my `library`
+
+It's mostly pointless, ridiculously over-engineered, and deceptively clever
+... just like me.
 
 # structure
 Each language lives in it's own directory.
