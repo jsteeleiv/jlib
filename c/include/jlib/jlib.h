@@ -16,9 +16,14 @@
 #include <jlib/jconv.h>
 #include <jlib/jcore.h>
 #include <jlib/jlist.h>
-#include <jlib/jlogs.h>
+#include <jlib/jdata.h>
 #include <jlib/jtime.h>
+#include <jlib/jregx.h>
+#include <jlib/jtype.h>
+#include <jlib/jlog.h>
+#include <jlib/jlex.h>
 #include <jlib/jusb.h>
 #include <jlib/jvec.h>
+#include <jlib/jerr.h>
 
 #endif /* JLIB_H */

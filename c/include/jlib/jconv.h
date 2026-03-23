@@ -4,11 +4,16 @@
 // This is a basic program written to perform conversions on ...
 // binary, decimal, and hexadecimal. Using C language.
 
+#include <png.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <setjmp.h>
+#include <jpeglib.h>
 #include <jlib/jlib.h>
 
 typedef struct BIN_ARR {
-    Error err;
-    Logger log;
+    Jerror err;
+    Jlog log;
     char *bin;
     char *buff;
     char **buffs;
@@ -20,9 +25,20 @@ typedef struct BIN_ARR {
 //int binConv(int b);
 char *to_base64(char *data, int size);
 int decToBin(int n); //prototyping the only manual function needed ???
-BIN_ARR ret_arr(bin_arr input, size_t size);
+bArray ret_arr(bin_arr input, size_t size);
 
 #ifdef JCONV_IMPL
+
+int test() {
+    const char* pngFileName = "input.png";
+    const char* jpgFileName = "output.jpg";
+    
+    convertPNGtoJPEG(pngFileName, jpgFileName);
+    
+    printf("Conversion from PNG to JPEG complete.\n");
+    
+    return 0;
+}
 
 // sill party trick for swapping without "tmp" var
 void xor_swap(int *x, int *y){
@@ -54,6 +70,80 @@ char *to_base64(char *data, int size){
 
     char *b64;
     
+}
+
+// Function to convert PNG to JPEG
+void convertPNGtoJPEG(const char* pngFileName, const char* jpgFileName) {
+    FILE *infile = fopen(pngFileName, "rb");
+    if (!infile) {
+        fprintf(stderr, "Error opening PNG file: %s\n", pngFileName);
+        exit(1);
+    }
+
+    // Initialize the PNG reader
+    png_structp png = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
+    if (!png) {
+        fprintf(stderr, "Error initializing PNG reader\n");
+        fclose(infile);
+        exit(1);
+    }
+
+    png_infop info = png_create_info_struct(png);
+    if (!info) {
+        fprintf(stderr, "Error initializing PNG info\n");
+        png_destroy_read_struct(&png, NULL, NULL);
+        fclose(infile);
+        exit(1);
+    }
+
+    png_bytep row_pointers[3];
+    int width, height, color_type;
+    png_read_png(png, info, PNG_TRANSFORM_EXPAND, NULL);
+
+    png_get_IHDR(png, info, &width, &height, &color_type, NULL, NULL, NULL, NULL);
+
+    // Initialize the JPEG writer
+    struct jpeg_compress_struct cinfo;
+    struct jpeg_error_mgr jerr;
+    cinfo.err = jpeg_std_error(&jerr);
+    jpeg_create_compress(&cinfo);
+    
+    FILE *outfile = fopen(jpgFileName, "wb");
+    if (!outfile) {
+        fprintf(stderr, "Error creating JPEG file: %s\n", jpgFileName);
+        png_destroy_read_struct(&png, &info, NULL);
+        exit(1);
+    }
+
+    jpeg_stdio_dest(&cinfo, outfile);
+    cinfo.image_width = width;
+    cinfo.image_height = height;
+    cinfo.input_components = 3;
+    cinfo.in_color_space = JCS_RGB;
+    jpeg_set_defaults(&cinfo);
+    jpeg_start_compress(&cinfo, TRUE);
+
+    row_pointers[0] = (png_bytep) malloc(3 * width * sizeof(png_byte));
+    row_pointers[1] = (png_bytep) malloc(3 * width * sizeof(png_byte));
+    row_pointers[2] = (png_bytep) malloc(3 * width * sizeof(png_byte));
+
+    while (height--) {
+        png_bytep row = png_get_rows(png, info)[height];
+        for (int x = 0; x < width; x++) {
+            png_bytep px = &(row[x * 4]);
+            row_pointers[0][x * 3 + 0] = px[0];
+            row_pointers[0][x * 3 + 1] = px[1];
+            row_pointers[0][x * 3 + 2] = px[2];
+        }
+        jpeg_write_scanlines(&cinfo, row_pointers, 1);
+    }
+
+    jpeg_finish_compress(&cinfo);
+    jpeg_destroy_compress(&cinfo);
+    fclose(outfile);
+
+    png_destroy_read_struct(&png, &info, NULL);
+    fclose(infile);
 }
 
 /*typedef struct{
