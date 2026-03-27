@@ -1,9 +1,12 @@
+#pragma once
 #ifndef JANSI_H
 #define JANSI_H
 
 //#include <stdio.h>
 #include <stdbool.h>
-#include <jlib/jlib.h>
+#include <stddef.h>
+#include <jlib/jcore/jerr.h>
+#include <jlib/jcore/jargs.h>
 
 #define ANSI_NONE 0
 

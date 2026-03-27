@@ -1,3 +1,4 @@
+#pragma once
 #ifndef JTIME_H
 #define JTIME_H
 

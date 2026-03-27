@@ -1,3 +1,4 @@
+#pragma once
 #ifndef JFILE_H
 #define JFILE_H
 
@@ -8,6 +9,24 @@
 #include <dirent.h>
 #include <string.h>
 
+#include <jerr.h>
+
+FILE *jopen(const char *path, const char *rwb, Jerror *jerr){
+    FILE *f = fopen(path, rwb);
+    if (!f) {
+        //SET_E(jerr, "file not found", WARN, FILE_ERR, -1, false);
+    }
+    //SET_E(jerr, "set successful", NONE, SUCCESS, 0, false);
+    return f;
+}
+
+void jclose(FILE *f, Jerror *jerr){
+    if (!f) {
+        //SET_E(jerr, "file not found", WARN, FILE_ERR, -1, false);    
+    }
+    fclose(f);
+    //SET_E(jerr, "set successful", NONE, SUCCESS, 0, false);
+}
 
 int listdir(const char *path) 
 {

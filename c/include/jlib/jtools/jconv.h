@@ -1,3 +1,4 @@
+#pragma once
 #ifndef JCONV_H
 #define JCONV_H
 
@@ -9,7 +10,10 @@
 #include <stdlib.h>
 #include <setjmp.h>
 #include <jpeglib.h>
-#include <jlib/jlib.h>
+
+#include <jlib/jcore/jerr.h>
+#include <jlib/jtools/jlog.h>
+
 
 typedef struct BIN_ARR {
     Jerror err;

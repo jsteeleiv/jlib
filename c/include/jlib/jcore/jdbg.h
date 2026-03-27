@@ -1,16 +1,30 @@
 #ifndef JDBG_H
 #define JDBG_H
 
-#include <jlib/jlib.h>
+#include <jdata/jtype.h>
+
 
 typedef enum EventKind {
-    TRACE_ENTER, TRACE_LEAVE, TRACE_POINT,
     EVENT_LOG, EVENT_WARN, EVENT_ERROR, EVENT_ASSERT,
     EVENT_STATE_CHANGE
 
 } ekind_t;
 
+typedef enum TraceKind {
+    TRACE_ENTER, TRACE_LEAVE, TRACE_POINT, TRACE_ERROR
+} tkind_t;
+
+typedef enum TraceFlag {
+    SHOW_FILE   = 1 << 0,
+    SHOW_LINE   = 1 << 1,
+    SHOW_FUNC   = 1 << 2,
+    SHOW_TIME   = 1 << 3,
+    SHOW_ERROR  = 1 << 4,
+    SHOW_DEPTH  = 1 << 5
+} tflag_t;
+
 typedef struct Event {
+    tkind_t trace_kind;
     const char *name;
     const char *func;
     const char *file;
@@ -42,21 +56,29 @@ typedef struct Frame {
 } frame_t;    // frames get pushed onto the stack
 
 typedef struct Configuration {
+    //Jansi color;
     int level;
     uint16_t flags;
     const char *module;
-    const char *ring_buf;
-    size_t ring_cap;
-
+    ringbuf_t *ringbuf;
+    size_t ringbuf_cap;
+    bool trace_enabled;
+    bool timer_enabled;
 } config_t;
 
 typedef struct {
-    Jerror errs;
-    Jansi ansi;
-    Jtime time;
-    Jlist events;
+    const Jerror *lasterr;
+    Jstack *ctxstk;
     Jstack frames;
+    Jlist events;
+    Jtime time;
+    ringbuf_t *ringbuf;
     config_t conf;
+    size_t trace_depth;
+    size_t max_depth;
+    void *sinks;
+    void *stats;
+    uint16_t trace_flags;
 
 } Jdbg;
 

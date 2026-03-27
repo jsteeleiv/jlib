@@ -2,6 +2,20 @@
 
 # jlib.sh ~ my [b|z|fi|ny]sh library for helpful data-structures, functions, etc.
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[[ -n "${JLIB_SH_SRC:-}" ]] && return
+readonly JLIB_SH_SRC=1
+
+JLIB_DIR="$HOME/software/jlib/sh"
+
+# jlib_sh modules
+source "$JLIB_DIR/jcore.sh"
+source "$JLIB_DIR/jargs.sh"
+source "$JLIB_DIR/jfile.sh"
+source "$JLIB_DIR/jclip.sh"
+source "$JLIB_DIR/jxtra.sh"
+source "$JLIB_DIR/jregx.sh"
+source "$JLIB_DIR/jerr.sh"
+source "$JLIB_DIR/jlog.sh"
 
 
 

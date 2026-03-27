@@ -10,7 +10,12 @@
  */
 
 #include <stdbool.h>
-#include <jlib/jlib.h>
+#include <stdarg.h>
+#include <stdio.h>
+#include <jdata/jtype.h>
+#include <jcore/jerr.h>
+#include <jdata/jlist.h>
+
 
 typedef struct Arguments{
     va_list list;
@@ -32,6 +37,7 @@ static inline Jargs init_args(va_list list);
 static inline any_t pop_arg(Jargs *args, Jtype *type);
 static inline Jargs start_args(Jargs *args, Jtype *last);
 
+void _args(const char *init_arg, ...);
 
 #endif /* JARGS_H */
 

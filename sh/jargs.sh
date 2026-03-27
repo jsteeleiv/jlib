@@ -11,8 +11,8 @@
 
 
 # 'include' guard
-[ -n "${ARGS_SH_INC:-}" ] && return 0
-ARGS_SH_INC=1
+[ -n "${ARGS_SH_SRC:-}" ] && return 0
+ARGS_SH_SRC=1
 
 declare -ag ARGS_POS=()
 declare -Ag ARGS_FLG=()
@@ -47,7 +47,10 @@ args_parse() {
             # handle -- terminator (end of options, start of positionals)
             --) 
                 #while [ $# -gt 0 ]; do
-                while (( $# )); do ARGS_POS+=("$1") shift done ;;
+                while (( $# )); do 
+                    ARGS_POS+=("$1") 
+                    shift 
+                    done ;;
             
             # handle key value pair options (--key=value)
             --*=*) 
@@ -61,7 +64,7 @@ args_parse() {
                     printf "Error: flag '--%s' does not take a value\n" "$key" >&2
                     return 1
                 else
-                    printf "Error: unknown option '%s'" "$key" >&2
+                    printf "Error: unknown option '--%s'" "$key" >&2
                     return 1
                 fi ;;
             
@@ -70,16 +73,16 @@ args_parse() {
                 key="${arg#--}"
 
                 if _args_in_list "$key" "${ARG_VALS[@]}"; then
-                    ARGS_FLG["$key"]=1
+                    ARGS_FLG["$key"]=1 # set the flag
                 elif _args_in_list "$key" "${ARG_FLAGS[@]}"; then
                     if [ $# -eq 0 ]; then
-                        printf "Error: option '%s' requires a value" "$key" >&2
+                        printf "Error: option '--%s' requires a value" "$key" >&2
                         return 1
                     fi
                     ARGS_OPT["$key"]="$1"
                     shift
                 else
-                    printf "Error: unknown option '%s'" "$key" >&2
+                    printf "Error: unknown option '--%s'" "$key" >&2
                     return 1
                 fi ;;
 
@@ -100,11 +103,11 @@ args_parse() {
                             shift
                             break
                         else
-                            printf "Error: option '%s' requires a value" "$ch" >&2
+                            printf "Error: option '--%s' requires a value" "$ch" >&2
                             return 1
                         fi
                     else
-                        echo "Error: unknown option '%s'" "$ch" >&2
+                        echo "Error: unknown option '--%s'" "$ch" >&2
                         return 1
                     fi
                 done ;;
@@ -117,13 +120,13 @@ args_parse() {
                     ARGS_FLG["$key"]=1
                 elif _args_in_list "$key" "${ARG_VALS[@]}"; then
                     if [ $# -eq 0 ]; then
-                        printf "Error: option '%s' requires a value" "$key" >&2
+                        printf "Error: option '--%s' requires a value" "$key" >&2
                         return 1
                     fi
                     ARGS_OPT["$key"]="$1"
                     shift
                 else
-                    echo "Error: unknown option '%s'" "$key" >&2
+                    echo "Error: unknown option '--%s'" "$key" >&2
                     return 1
                 fi ;;
 
@@ -192,7 +195,6 @@ args_need_pos() {
 
 args_need_pos_exact() {
     local need="$1"
-
     if (( ${#ARGS_POS[@]} != need )); then
         printf 'Error: expected exactly %d positional argument(s), got %d\n' \
             "$need" "${#ARGS_POS[@]}" >&2

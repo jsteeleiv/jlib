@@ -1,10 +1,17 @@
+#pragma once
 #ifndef JTYPE_H
 #define JTYPE_H
 
 #include <stddef.h>
 #include <stdint.h>
 #include <stdbool.h>
-#include <jlib/jlib.h>
+
+#include <jlib/jcore/jtime.h>
+#include <jlib/jcore/jerr.h>
+#include <jlib/jdata/jstk.h>
+#include <jlib/jdata/jlist.h>
+//#include <jlib/jdata/jmap.h>
+
 
 /* types */
 typedef enum Kind {
@@ -43,7 +50,7 @@ typedef struct Random{
    Jerror jerr;
    Jtime time;
    Jstack stack;
-   Jansi ansi;
+   //Jansi ansi;
    value_t val;
 } rand_t;
 
@@ -113,14 +120,19 @@ typedef struct {
 typedef struct {
     Jerror errs;
     Jtime time;
-    Jmap constellation;
+    //Jmap constellation;
     bool omen;
 } Oracle;
 
 /* function declarations */
 void JTYPE_example(void);
 
+typedef struct ByteArray {
+    unsigned char *data;
+    size_t length;
+} bArray;
 
+Jerror readfile_bArray(const char *path);
 
 
 #endif /* JTYPE_H */
@@ -190,6 +202,58 @@ static inline bool ringbuf_peek(ringbuf_t *rb, Jtype *val){
     return true;
 }
 
+
+Jerror readfile_bArray(const char *path) {
+    Jerror jerr;
+    FILE *f;
+    bArray arr;
+    long file_sz;
+    size_t bytes_read;
+    unsigned char *tmpbuf;
+
+    if (!path) {
+        //JERR("No filepath provided", ERROR, LOG_ARGS, NULL_ARG, -1, false);
+        return jerr;
+    }
+
+    f = fopen(path, "rb");
+    if (!f) {
+        //JERR("could not read file", ERROR, LOG_FILE, FILE_OPEN, -1, false);
+        return jerr;
+    }
+
+    arr.data = NULL;
+    arr.length = 0;
+
+    // Read the file byte by byte and store it in the array
+    unsigned char byte;
+    while (fread(&byte, sizeof(byte), 1, f) == 1) {
+        // Reallocate memory for the byte array and append the byte
+        arr.data = (unsigned char*)realloc(arr.data, arr.length + 1);
+        if (!arr.data) {
+            //JERR("Could not allocate memory", ERROR, LOG_MEM, MEM_NULL, -1, false);
+            fclose(f);
+            return jerr;
+        }
+        arr.data[arr.length] = byte;
+        arr.length++;
+    }
+
+    fclose(f);
+
+    // Print the bytes stored in the struct
+    printf("Bytes read from file (%s):\n", path);
+    for (size_t i = 0; i < arr.length; i++) {
+        printf("%02X ", arr.data[i]);  // Print bytes as hexadecimal
+    }
+    printf("\n");
+
+    // Free the allocated memory for the byte array
+    free(arr.data);
+    //JERR("NONE", NONE, LOG_NONE, SUCCESS, 0, false);
+    return jerr;
+
+}
 
 /* function definitions */
 void JTYPE_example(void)

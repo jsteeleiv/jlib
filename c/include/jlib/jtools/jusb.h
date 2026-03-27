@@ -1,3 +1,4 @@
+#pragma once
 #ifndef JUSB_H
 #define JUSB_H
 
@@ -24,7 +25,7 @@ uint64_t usb_minsize(uint64_t bytes);
 
 /* Same, but includes a buffer/overhead amount. */
 uint64_t usb_minsize_buff(uint64_t bytes, uint64_t buffer);
-
+#endif /* JUSB_H */
 #ifdef JUSB_IMPL
 
 static const uint64_t usb_table[] = {
@@ -61,4 +62,3 @@ static inline uint64_t usb_minsize_buff(uint64_t bytes, uint64_t buffer){
 
 
 #endif /* JUSB_IMPL */
-#endif /* JUSB_H */

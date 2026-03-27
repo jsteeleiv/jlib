@@ -1,49 +1,56 @@
+#pragma once
 #ifndef JLIST_H
 #define JLIST_H
 
-#include <stdlib.h>
-#include <jlib/jlib.h>
+#include <jdata/jtype.h>
+#include <jcore/jerr.h>
+
 
 typedef struct Node {
-    uintptr_t xord;
+    uintptr_t xord;     //
+    const char *data;
     void *next;
     void *prev;
     int value;
-    const char *data;
     bool seen;
-} node;
+} node_t;
 
-typedef struct LinkedList {
-    Node *head;
-    Node *tail;
-    int size;
+typedef struct List {
     const char *data;
-    Error err;
-} list;
+    node_t *head;
+    node_t *tail;
+    int size;
+} list_t;
+
+typedef struct {
+    Jerror errs;
+    list_t *list;
+    // list_t *lists;
+} Jlist;
 
 #define ll_add_xor(v) _ll_add_xor(v, #v)
 
-LinkedList new_ll();
-Node *new_node(int val, const char *data);
-void ll_del(LinkedList *ll);
-void ll_add(LinkedList *ll, const char *data);
-void ll_ins(LinkedList *ll, int idx, const char *data);
-void _ll_add_xor(LinkedList *ll, int value, const char *name);
+Jlist new_ll();
+node_t *new_node(int val, const char *data);
+void ll_del(Jlist *ll);
+void ll_add(Jlist *ll, const char *data);
+void ll_ins(Jlist *ll, int idx, const char *data);
+void _ll_add_xor(Jlist *ll, int value, const char *name);
 
 /* ! IMPLEMENTATION ! */
-
 #ifdef JLIST_IMPL
+#include <stdlib.h>
 
-Node *new_node(int val, const char *data){
-    Node *node = (Node*)malloc(sizeof(*node));
+node_t *new_node(int val, const char *data){
+    node_t *node = (node_t*)malloc(sizeof(*node));
     memset(node, 0, sizeof(*node));
     node->value = val;
     // node->seen = false;
     return node;
 }
 
-LinkedList new_ll(){
-    LinkedList ll;
+Jlist new_ll(){
+    Jlist ll;
     //char timestr[64];
     ll.head = NULL;
     ll.tail = NULL;
@@ -55,8 +62,8 @@ LinkedList new_ll(){
     return ll;
 }
 
-void ll_ins(LinkedList *ll, int idx, const char *data){
-//     Node *insert = (Node*)malloc(sizeof(Node));
+void ll_ins(Jlist *ll, int idx, const char *data){
+//     node_t *insert = (node_t*)malloc(sizeof(node_t));
 //     if (insert == NULL) return;
 
 //     insert->data = data;
@@ -65,28 +72,28 @@ void ll_ins(LinkedList *ll, int idx, const char *data){
     
 }
 
-void ll_add(LinkedList *ll, const char *data){
+void ll_add(Jlist *ll, const char *data){
     if (ll->head == NULL) 
-    Node *node = new_node(1, data);
+    node_t *node = new_node(1, data);
 }
 
-void ll_del(LinkedList *ll){
-    Node *tmp;
+void ll_del(Jlist *ll){
+    node_t *tmp;
     while (ll->head != NULL){
         tmp = ll->head;
-        ll->head = (Node*)ll->head->next;
+        ll->head = (node_t*)ll->head->next;
         free(tmp);
     }
 }
 
-void _ll_add_xor(LinkedList *ll, int value, const char *name){
+void _ll_add_xor(Jlist *ll, int value, const char *name){
     if (ll->head == NULL){
         //printf("[error] jlib: NULL found at end of linked list {%s}!", name);
         ll->tail = new_node(value, name);
         ll->head = ll->tail;
         
     }else{
-        Node *node = new_node(value, name);
+        node_t *node = new_node(value, name);
         node->xord  = (uintptr_t)ll->tail;
         ll->tail->xord ^= (uintptr_t)node;
         ll->tail = node;

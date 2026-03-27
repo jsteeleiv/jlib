@@ -1,7 +1,9 @@
+#pragma once
 #ifndef JSTK_H
 #define JSTK_H
 
-#include <jlib/jlib.h>
+#include <jlib/jcore/jerr.h>
+#include <stddef.h>
 
 typedef struct Stack{
    void **items;

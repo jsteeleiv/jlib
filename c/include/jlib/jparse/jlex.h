@@ -1,3 +1,4 @@
+#pragma once
 #ifndef JLEX_H
 #define JLEX_H
 

@@ -1,3 +1,4 @@
+#pragma once
 #ifndef JREGX_H
 #define JREGX_H
 
@@ -6,11 +7,13 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdbool.h>
-#include <jlib/jlib.h>
 
 #define MAX_INPUT_LENGTH 256
 #define MAX_ERROR_MSG 256
 
+typedef struct Token {
+    const char *value;
+} token_t;
 
 
 bool match(const char *pattern, Token *tokens);
@@ -29,8 +32,8 @@ void regex_test(char *pattern, char *input){
 
     //Ensure that "input.txt" contains the text you want to match against the pattern.
     const char *path = "input.txt";
-    Jerror err;
-    FILE *f = jopen(path, "r", &err);
+    //Jerror err;
+    FILE *f = fopen(path, "r");
 
     //char input[MAX_INPUT_LENGTH];
     //char pattern[MAX_INPUT_LENGTH];
@@ -44,7 +47,7 @@ void regex_test(char *pattern, char *input){
 
     if (fgets(pattern, sizeof(pattern), stdin) == NULL) {
         fprintf(stderr, "Error reading input\n");
-        return 1;
+        return;
     }
     
     // Remove newline character from pattern
@@ -58,7 +61,7 @@ void regex_test(char *pattern, char *input){
     if (reti) {
         regerror(reti, &regex, error_message, sizeof(error_message));
         fprintf(stderr, "Regex compilation error: %s\n", error_message);
-        return 1;
+        return;
     }
     
     printf("Enter input text to test the regular expression (or 'quit' to exit):\n");

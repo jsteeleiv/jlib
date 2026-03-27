@@ -1,14 +1,17 @@
+#pragma once
 #ifndef JVEC_H
 #define JVEC_H
 
-#include <jlib/jlib.h>
+//#include <jlib/jdata/jtype.h>
+#include <stdio.h>
+
 
 // macro used to 'capture' the name of the variable (#v), for err message
 #define rsz_vec(v) _rsz_vec(v, #v)
 
 // dynamic array<vector>
 typedef struct Vector {
-    Jerror errs;       // errors struct to help handle errno etc.
+    //Jerror errs;       // errors struct to help handle errno etc.
     void *data;      // pointer to the data
     size_t size;     // size of ONE element (e.g., sizeof(int))
     size_t len;      // current amount of items in list

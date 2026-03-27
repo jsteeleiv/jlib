@@ -1,7 +1,9 @@
 #ifndef JMAP_H
 #define JMAP_H
 
-#include <jlib/jlib.h>
+#include <jlib/jdata/jtype.h>
+//#include <jlib/jcore/jlog.h>
+
 
 typedef struct Entry {
     Jtype val;
@@ -22,7 +24,7 @@ typedef struct Map {
 
 typedef struct {
     Jerror errs;
-    Jlog logs;
+    ////Jlog logs;
     map_t *map;
 } Jmap;
 

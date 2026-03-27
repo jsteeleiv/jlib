@@ -1,33 +1,11 @@
+#pragma once
 #ifndef JDATA_H
 #define JDATA_H
 
-/* =========================
-   PUBLIC API
-   ========================= */
-
-#include <stddef.h>
-#include <stdbool.h>
-
-/* types */
-
-/* function declarations */
-void jdata_example(void);
+#include <jdata/jlist.h>
+#include <jdata/jmap.h>
+#include <jdata/jstk.h>
+#include <jdata/jtype.h>
+#include <jdata/jvec.h>
 
 #endif /* JDATA_H */
-
-
-/* =========================
-   IMPLEMENTATION
-   ========================= */
-
-#ifdef JDATA_IMPL
-
-#include <stdlib.h>
-
-/* function definitions */
-void jdata_example(void)
-{
-    /* implementation */
-}
-
-#endif /* JDATA_IMPL */
