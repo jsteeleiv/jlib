@@ -8,7 +8,7 @@
 
 // dynamic array<vector>
 typedef struct Vector {
-    Jerror jerr;       // errors struct to help handle errno etc.
+    Jerror errs;       // errors struct to help handle errno etc.
     void *data;      // pointer to the data
     size_t size;     // size of ONE element (e.g., sizeof(int))
     size_t len;      // current amount of items in list
@@ -16,27 +16,27 @@ typedef struct Vector {
     size_t grew;     // times it's been resized
     float rate;      // growth rate (e.g. how much to resize)
     bool full;       // nearing capacity?
-    bool moved;      // has the address been relocated?
-} Jvec;
+    bool grown;      // has the address been relocated?
+} vec_t;
 
 #ifdef JVEC_IMPL
 
 //Initialize the vector
-void new_vec(Jvec *v, size_t size, size_t cap, float rate){
+void new_vec(vec_t *v, size_t size, size_t cap, float rate){
     v->size = size;
     v->cap = cap;
     v->len = 0;
     v->grew = 0;
     v->rate = rate;
     bool full = false;
-    bool moved = false;
+    bool grown = false;
     bool error = false;
 
     // allocate `amount` of items * bytes per item
     v->data = malloc(v->cap * v->size);
 }
 
-void _rsz_vec(Jvec *v, const char *name){
+void _rsz_vec(vec_t *v, const char *name){
     // track the old pointer to see if addr is being moved
     void* old_ptr = v->data;
     // calculate new capacity depending on the desired rate of growth
@@ -51,10 +51,10 @@ void _rsz_vec(Jvec *v, const char *name){
     v->data = tmp;
     v->cap = new_cap;
     v->grew++;
-    v->moved = (v->data != old_ptr);
+    v->grown = (v->data != old_ptr);
 }
 
-void del_vec(Jvec* v){
+void del_vec(vec_t* v){
     if (v == NULL) return;
     if (v->data != NULL){
         free(v->data);
@@ -63,7 +63,7 @@ void del_vec(Jvec* v){
     free(v);
 }
 
-void add_vec(Jvec *v, void *item){
+void add_vec(vec_t *v, void *item){
     if (v->len >=v->cap){
         rsz_vec(v);
     }
