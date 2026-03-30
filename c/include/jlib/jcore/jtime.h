@@ -5,73 +5,71 @@
 #include <stdio.h>
 #include <time.h>
 
+// place the highest value into a var of type time_t {(8bytes)-1}
+time_t max_v = 0x7FFFFFFFl;
+
 typedef struct TimeStamp {
-    struct tm raw;
-    char tstr[1024];         // 1k; timestamp in formatted string form
-    char diag[1024];         // 1k; diagnostic string for Jerror reporting
-    char isordy[64];         // 64 bytes; proper iso8601 dev/log/API timestamp
-    char dateusa[16];        // USA format: Month/Day/Year   (MM/DD/YYYY)
-    char dateeur[16];        // EUR format: Day/Month/Year   (DD/MM/YYYY)
-    const char *tzname;      // time-zone information(EST, EDT, UTC, etc.)
-    time_t epoch;            // epoch time (raw)
-    long msec, usec, nsec;   // [milli|micro|nano]seconds
-    int sec, min, hour, mday, wday, yday, isdst, year, mon,
-        gmtoff, yweek, doy;
+    time_t rawtime;
+    struct tm tm_time;
+    char time_str[1024];       // 1k; timestamp in formatted string form
+    const char iso_rdy[64];    // 64 bytes; proper iso8601 dev/log/API timestamp
+    const char dateusa[16];    // USA format: Month/Day/Year   (MM/DD/YYYY)
+    const char dateeur[16];    // EUR format: Day/Month/Year   (DD/MM/YYYY)
+    const char tm_zone[4];     // time-zone information(EST, EDT, UTC, etc.)
+} jtime_t;
+
+typedef struct TimeString {
+    char diag[1024];           // 1k; diagnostic string for Jerror reporting
+    long msec, usec, nsec;     // [milli|micro|nano]seconds
+    int sec, min, hour, wday, mon, mday, 
+        year, yday, yweek, doy, isdst, gmtoff;
     bool isweekend;
     bool isleapyear;
     bool isvalid;
+} timestr_t;
+
+typedef struct Timer {
+    jtime_t curr;
+    jtime_t start;
+    jtime_t stop;
+    bool reset;
+} timer_t;
+
+typedef struct Clock {
+    Jansi ansi;
+    jtime_t jtime;
+    struct tm tm_time;
+    jtime_t offset;
+    timestr_t tstr;
+    timer_t timer;
+    size_t ticks;
+    char *display;
+    bool frozen;
+    bool dirty;
+    bool utc;
+    bool dst;
+} jclock_t;
+
+typedef struct  {
+    Jerror err;
+    Jlog log;
+    jclock_t clock;
+    timestr_t tstr;
+    jtime_t epoch;            // epoch time (raw)
 } Jtime;
 
-Jtime init_t(void) {
-    Jtime t = {0};
-    time_t now = time(NULL);
-    struct tm *lt = localtime(&now);
+static inline time_t yup();
 
-    if (!lt) return t;
-    t.raw = *lt;
-    t.sec = lt->tm_sec;
-    t.min = lt->tm_min;
-    t.hour = lt->tm_hour;
-    t.mday = lt->tm_mday;
-    t.wday = lt->tm_wday;
-    t.yday = lt->tm_yday;
-    t.isdst = lt->tm_isdst;
-    t.gmtoff = lt->tm_gmtoff;
-    t.year = (lt->tm_year + 1900);
-    t.mon = (lt->tm_mon + 1);
-    size_t n = strftime(t.tstr, sizeof(t.tstr), "%Y%m%d_%H%M%S",lt);
-    if (n == 0) t.tstr[0] = '\0';
-    snprintf(t.diag, sizeof(t.diag), "strftime() wrote %zu characters at time of initialization", n);
-    return t;
-}
+Jtime init_jtime(void);
 
-// place the highest value into a var of type time_t {(8bytes)-1}
-time_t max_v = 0x7FFFFFFFl;
-// pass it to ctime(){convert time} to convert it into an ascii str
-//char *str = ctime(&max_v);
-
-// print the str, 
-//printf("max date = %s\n", str);
-//look at the definition of time_t, (/usr/include/time.h)
-// time_t == __int64_t == ll == long long int == 64 bits == 8 bytes
-    /* code */
-
-//? For how many years into the future does time_t last?
-
-	/* amend */
-
-// obtain current time by calling time()
-//	char *now = asctime(time(*(&max_v)));
-// call difftime() to get # of sec { now .. max } value of time_t
-// format value into years, months, weeks, days, hours, mins
-// print it
-//	printf("now = %s\n", now);
+static inline struct tm getnow();
 
 
-
+#endif /* JTIME_H */
+#define JTIME_IMPL
 #ifdef JTIME_IMPL
 
-tm getnow(){
+static inline struct tm getnow(){
     time_t now = time(NULL);
     struct tm out;
 
@@ -83,7 +81,44 @@ tm getnow(){
     return out; // return by value (copy)
 }
 
+Jtime init_jtime(void){
+    Jtime t = {0};
+    struct tm now = getnow();
+    struct tm *lt = localtime(&now);
+
+    if (!lt) return t;
+    t.clock.tm_time = *lt;
+    t.tstr.sec = lt->tm_sec;
+    t.tstr.min = lt->tm_min;
+    t.tstr.hour = lt->tm_hour;
+    t.tstr.mday = lt->tm_mday;
+    t.tstr.wday = lt->tm_wday;
+    t.tstr.yday = lt->tm_yday;
+    t.tstr.isdst = lt->tm_isdst;
+    t.tstr.gmtoff = lt->tm_gmtoff;
+    t.tstr.year = (lt->tm_year + 1900);
+    t.tstr.mon = (lt->tm_mon + 1);
+    size_t n = strftime(t.tstr.diag, sizeof(t.tstr), "%Y%m%d_%H%M%S",lt);
+    if (n == 0) t.tstr.diag[0] = '\0';
+    snprintf(t.tstr.diag, sizeof(t.tstr.diag), "strftime() wrote %zu characters at time of initialization", n);
+    return t;
+}
+// time_t max_v = 0x7FFFFFFFl;
+// pass it to ctime(){convert time} to convert it into an ascii str
+//char *str = ctime(&max_v);
+// print the str, 
+//printf("max date = %s\n", str);
+// obtain current time by calling time()
+//	char *now = asctime(time(*(&max_v)));
+// call difftime() to get # of sec { now .. max } value of time_t
+// format value into years, months, weeks, days, hours, mins
+// print it
+//	printf("now = %s\n", now);
+
+// time_t == __int64_t == ll == long long int == 64 bits == 8 bytes
+    /* code */
+
+
+
+
 #endif /* JTIME_IMPL */
-
-
-#endif /* JTIME_H */
