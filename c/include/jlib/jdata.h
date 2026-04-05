@@ -2,6 +2,7 @@
 #ifndef JDATA_H
 #define JDATA_H
 
+#include <jdata/jany.h>
 #include <jdata/jlist.h>
 #include <jdata/jmap.h>
 #include <jdata/jstk.h>
