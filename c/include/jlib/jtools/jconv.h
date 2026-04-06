@@ -11,7 +11,7 @@
 #include <setjmp.h>
 #include <jpeglib.h>
 
-#include <jlib/jcore/jerr.h>
+#include <jlib/jstd/jerr.h>
 #include <jlib/jtools/jlog.h>
 
 

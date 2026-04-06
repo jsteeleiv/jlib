@@ -1,3 +1,4 @@
+#pragma once
 #ifndef JIO_H
 #define JIO_H
 

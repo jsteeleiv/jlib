@@ -9,7 +9,23 @@
 #include <dirent.h>
 #include <string.h>
 
-#include <jerr.h>
+//#include <jerr.h>
+
+
+typedef struct FileInfo {
+    size_t size;
+    time_t created;
+    time_t modified;
+    uint32_t mode;
+    bool exists;
+    char *path;
+} fileinfo_t;
+
+
+#endif /* JFILE_H */
+
+
+#ifdef JFILE_IMPL
 
 FILE *jopen(const char *path, const char *rwb, Jerror *jerr){
     FILE *f = fopen(path, rwb);
@@ -162,11 +178,4 @@ int start() {
 }
 
 
-
-#ifdef JFILE_IMPL
-
-
-
 #endif /* JFILE_IMPL */
-
-#endif /* JFILE_H */

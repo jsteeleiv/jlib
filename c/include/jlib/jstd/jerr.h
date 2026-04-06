@@ -3,17 +3,19 @@
 
 
 #include <jtools/jlog.h>
+#include <jtools/jansi.h>
+#include <jdata/jvec.h>
+
 
 
 typedef enum ErrorCode {
     ERR_SUCCESS = 0,
 
     /* general: 1-99 */
-    ERR_GEN_UNKNOWN,
-    ERR_GEN_BAD_ARG,
-    ERR_GEN_NULL_ARG,
-    ERR_GEN_BAD_STATE,
-    ERR_GEN_UNSUPPORTED,
+    ERR_UNKNOWN,
+    ERR_NULL_ARG,
+    ERR_BAD_STATE,
+    ERR_UNSUPPORTED,
 
     /* memory: 100-199 */
     ERR_MEM_ALLOC = 100,
@@ -22,7 +24,7 @@ typedef enum ErrorCode {
     ERR_MEM_BOUNDS,
 
     /* file: 200-299 */
-    ERR_FILE_GENERIC = 200,
+    ERR_FILE_NULL = 200,
     ERR_FILE_OPEN,
     ERR_FILE_CLOSE,
     ERR_FILE_READ,
@@ -31,7 +33,7 @@ typedef enum ErrorCode {
     ERR_FILE_TELL,
     ERR_FILE_FLUSH,
     ERR_FILE_EOF,
-    ERR_FILE_NOT_FOUND,
+    //ERR_FILE_NOT_FOUND,
     ERR_FILE_PERM,
     ERR_FILE_EXISTS,
     ERR_FILE_INVALID,
@@ -51,31 +53,24 @@ typedef enum ErrorCode {
 
 typedef struct Error {
     errcode_t errcode;   // error code
-    time_t time;      // error struct initialization time (raw tm)
+    time_t rawtime;      // error struct initialization time (raw tm)
     const char *file;    // filepath, if applicable
     const char *func;    // name of func on stack (caution: may be null)
     const char *msg;     // jlib's error message (string)
     int lives;           // if life == 0; die = true; (-1 = ♾️ )
     int line;            // number of line in question, in *file
     int exitcode;        // actual exit code -> propogated
-    logcode_t logcode;   // 
-    loglvl_t loglvl;     // 
     bool passerr;        // if ERROR or higher write to stderr
     bool die;            // should we die after some point?
 } error_t;
 
-typedef struct Information {
-    error_t error;       // custom error type
-    const char *mod;
-    const char *ctx;
-    vec_t *data;
-} info_t;
+#define err_ok(e) ((e)->errcode == ERR_SUCCESS)
 
 typedef struct {
-    Jtime errtime;       // time object
-    //Jansi ansi;          // ansi object (ascii, coloring, etc)
+    Jtime time;       // time object
+    Jansi ansi;          // ansi object (ascii, coloring, etc)
     Jlist list;          // list of errors
-
+    Jlog log;
 } Jerror;
 
 
@@ -114,12 +109,30 @@ void kill(Jerror *e);
 
 
 #endif /* JERR_H */
-
+#define JERR_IMPL
 #ifdef JERR_IMPL
 /* TODO; finish implementing the implementations ... */
 // waiting to build Jany data type to handle generics; will change then
 #include <stdio.h>
 #include <errno.h>
+
+// typedef struct Error {
+//     errcode_t errcode;   // error code
+//     time_t rawtime;      // error struct initialization time (raw tm)
+//     const char *file;    // filepath, if applicable
+//     const char *func;    // name of func on stack (caution: may be null)
+//     const char *msg;     // jlib's error message (string)
+//     int lives;           // if life == 0; die = true; (-1 = ♾️ )
+//     int line;            // number of line in question, in *file
+//     int exitcode;        // actual exit code -> propogated
+//     logcode_t logcode;   // 
+//     loglvl_t loglvl;     // 
+//     bool passerr;        // if ERROR or higher write to stderr
+//     bool die;            // should we die after some point?
+// } error_t;
+
+
+
 
 Jerror reset(Jerror *e, const char *opt, void *val, bool kill){
     // TODO: figure out Jany generic type ...;
@@ -127,7 +140,9 @@ Jerror reset(Jerror *e, const char *opt, void *val, bool kill){
 
 void clear(Jerror *e){
     if (!e) return;
-    *e = (Jerror){0};
+    e->errtime.tstr = {NULL};
+    e->log.logs.list = {NULL};
+    e->time. = getnow();
 }
 
 void kill(Jerror *e){

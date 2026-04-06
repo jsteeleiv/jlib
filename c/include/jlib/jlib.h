@@ -14,10 +14,10 @@
 */
 
 
-#include <jcore.h>
 #include <jdata.h>
 #include <jio.h>
 #include <jparse.h>
+#include <jstd.h>
 #include <jtools.h>
 
 #endif /* JLIB_H */

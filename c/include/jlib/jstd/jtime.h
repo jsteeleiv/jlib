@@ -66,7 +66,6 @@ static inline struct tm getnow();
 
 
 #endif /* JTIME_H */
-#define JTIME_IMPL
 #ifdef JTIME_IMPL
 
 static inline struct tm getnow(){
@@ -103,22 +102,5 @@ Jtime init_jtime(void){
     snprintf(t.tstr.diag, sizeof(t.tstr.diag), "strftime() wrote %zu characters at time of initialization", n);
     return t;
 }
-// time_t max_v = 0x7FFFFFFFl;
-// pass it to ctime(){convert time} to convert it into an ascii str
-//char *str = ctime(&max_v);
-// print the str, 
-//printf("max date = %s\n", str);
-// obtain current time by calling time()
-//	char *now = asctime(time(*(&max_v)));
-// call difftime() to get # of sec { now .. max } value of time_t
-// format value into years, months, weeks, days, hours, mins
-// print it
-//	printf("now = %s\n", now);
-
-// time_t == __int64_t == ll == long long int == 64 bits == 8 bytes
-    /* code */
-
-
-
 
 #endif /* JTIME_IMPL */

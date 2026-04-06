@@ -2,8 +2,8 @@
 #ifndef JLIST_H
 #define JLIST_H
 
-#include <jdata/jtype.h>
-#include <jcore/jerr.h>
+//#include <jtype.h>
+#include "jlib/jstd/jerr.h"
 
 
 typedef struct Node {

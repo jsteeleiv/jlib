@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <string.h>
-#include <jlib/jlib.h>
+//#include <jlib/jlib.h>
 
 
 //prototyping color functions

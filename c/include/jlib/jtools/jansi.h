@@ -5,8 +5,8 @@
 //#include <stdio.h>
 #include <stdbool.h>
 #include <stddef.h>
-#include <jlib/jcore/jerr.h>
-#include <jlib/jcore/jargs.h>
+#include <jlib/jstd/jerr.h>
+#include <jlib/jparse/jargs.h>
 
 #define ANSI_NONE 0
 
@@ -108,7 +108,7 @@ typedef struct {
 
 
 
-static inline Jerror ansi_print(style_t fmt, const char *msg, Jargs args);
+static inline Jerror ansi_print(style_t fmt, const char *msg, Jarg args);
 static inline void ansi_reset(void);
 static inline void ansi_fg(color_t color, int bold);
 

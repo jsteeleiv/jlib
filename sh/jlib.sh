@@ -8,7 +8,7 @@ readonly JLIB_SH_SRC=1
 JLIB_DIR="$HOME/software/jlib/sh"
 
 # jlib_sh modules
-source "$JLIB_DIR/jcore.sh"
+source "$JLIB_DIR/jstd.sh"
 source "$JLIB_DIR/jargs.sh"
 source "$JLIB_DIR/jfile.sh"
 source "$JLIB_DIR/jclip.sh"

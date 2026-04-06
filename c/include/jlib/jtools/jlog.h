@@ -2,7 +2,7 @@
 #ifndef JLOG_H
 #define JLOG_H
 
-#include <jlib/jcore/jtime.h>
+#include <jlib/jstd/jtime.h>
 #include <jlib/jdata/jlist.h>
 #include <jlib/jdata/jvec.h>
 
@@ -35,15 +35,32 @@ typedef enum LogCode {
     LOG_TRACE
 } logcode_t;
 
+typedef struct LogFile {
+    FILE *handle;
+    fileinfo_t info;
+    size_t size;
+    uint8_t flags;
+    bool isopen;
+    bool flush;
+    char *name;
+} logfile_t;
+
+#define LOGFILE_FLAG_APPEND   0x01
+#define LOGFILE_FLAG_AUMAKE   0x02
+#define LOGFILE_FLAG_AUFLUSH  0x04
+#define LOGFILE_FLAG_OWNPATH  0x08
+#define LOGFILE_FLAG_OWNFILE  0x10
+#define LOGFILE_FLAG_ROTATE   0x20
+
 typedef struct Logger {
-    loglvl_t lvl;             // priority level
-    logcode_t code;           // LOG_CODE
-    time_t rawtime;           // raw epoch timestamp
-    vec_t buffer;             // tmp buffer
-    const char* logfile;      // path to logfile
-    const char* text;         // rendered line of text (will `\n`'d)
-    size_t size;              // size of message (length of characters)
-    uint32_t source;          // last line of the file written to
+    loglvl_t lvl;     // priority level
+    logcode_t code;   // LOG_CODE
+    time_t rawtime;   // raw epoch timestamp
+    vec_t buffer;     // tmp dynamic buffer
+    logfile_t file;   // logfile type
+    const char* msg;  // message to write to file (will `\n`'d)
+    size_t size;      // size of message (length of characters)
+    uint32_t source;  // last line of the file written to
 } log_t;
 
 typedef struct {

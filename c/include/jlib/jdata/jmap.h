@@ -1,21 +1,22 @@
+#pragma once
 #ifndef JMAP_H
 #define JMAP_H
-
-// #include <stdlib.h>
+#include <stdio.h>
+#include <stdlib.h>
 // #include <string.h>
-// #include <stdint.h>
-#include <jlib/jdata/jvec.h>
-//#include <jlib/jcore/jlog.h>
+#include <stdint.h>
+//#include <jlib/jdata/jvec.h>
+//#include <jlib/jstd/jlog.h>
 
 typedef struct MetaData {
     size_t len;
     size_t cap;
     void *hash_tbl;
-    ptrdiff_t tmp;
+    //ptrdiff_t tmp;
 } meta_t;
 
 typedef struct StringBlock {
-    struct strblock_t *next;
+    //struct strblock_t *next;
     char string[8];
 } strblock_t;
 
@@ -60,8 +61,8 @@ typedef struct Map {
 } map_t;
 
 typedef struct {
-    Jerror err;
-    Jlog log;
+    //Jerror err;
+    //Jlog log;
     map_t *map;
 } Jmap;
 

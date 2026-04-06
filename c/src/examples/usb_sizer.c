@@ -1,5 +1,6 @@
 #define JUSB_IMPL
-#include <include/jlib/jusb.h>
+//#include <include/jlib/jusb.h>
+#include <jlib/jtools/jusb.h>
 #include <stdio.h>
 #include <sys/stat.h>
 

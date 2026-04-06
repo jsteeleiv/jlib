@@ -1,64 +1,170 @@
+#pragma once
 #ifndef JSTR_H
 #define JSTR_H
 
 #include <stdio.h>
+#include <jstd/jerr.h>
+
+typedef struct CharInfo {
+    char ch;
+    size_t idx;
+    bool alpha;
+    bool digit;
+    bool space;
+    bool unset;
+} charinfo_t;
+
+static inline charinfo_t charinfo_at(strview_t sv, size_t i);
+
+typedef struct 
+CharList {
+    char *data;
+    size_t len;
+    size_t cap;
+} charlist_t;
+
+static inline bool charlist_init(charlist_t *list, size_t max);
+static inline bool charlist_push(charlist_t *list, char c);
+static inline void charlist_free(charlist_t *list);
 
 typedef struct StringView {
-    const char *str;
-    //char *buffer;
+    const char *data;
+    char *buffer;       // optional owned buffer
     size_t size;
-    size_t id;
 } strview_t;
 
+// used to spread fields out before sending to printf()
+#define STR_FMT "%.*s"
+// printf(STR_FMT "\n", STR_ARG(s));
+#define STR_ARG(s) (s).size, (s).data
+
 strview_t sv(const char *cstr);
-void sv_chop_left(strview_t *sv,  size_t n);
-void sv_trim_left(strview_t *sv);
-void sv_chop_right(strview_t *sv, size_t n);
-void sv_chop_right(strview_t *sv, size_t n);
-void sv_trim(strview_t *sv);
+static inline void sv_chop_left(strview_t *sv,  size_t n);
+static inline void sv_trim_left(strview_t *sv);
+static inline void sv_chop_right(strview_t *sv, size_t n);
+static inline void sv_trim_right(strview_t *sv);
+static inline void sv_trim(strview_t *sv);
+static inline strview_t sv_chop_by_delim(strview_t *sv, char delim);
+
+typedef struct CharIterator {
+    strview_t *parent;
+    size_t index;
+} chariter_t;
+
+typedef struct String {
+    Jerror errs;
+    strview_t str;
+    size_t id;
+
+} string_t;
+
 
 #endif /* JSTR_H */
 #define JSTR_IMPL
 #ifdef JSTR_IMPL
-#include <string.h>
-#include <ctype.h>
 
-strview_t sv(const char *cstr){
-    return (StringView) {
-        .str = cstr,
+#include <string.h>
+#include <ctype.h> // must cast everything as (unsigned char)
+#include <stdlib.h>
+
+/* charinfo */
+static inline charinfo_t charinfo_at(strview_t sv, size_t i){
+    char c = (i < sv.size) ? sv.data[i] : '\0';
+    
+    return (charinfo_t){
+        .ch    = c,
+        .idx   = i,
+        .alpha = isalpha((unsigned char)c) ? true : false,
+        .digit = isdigit((unsigned char)c) ? true : false,
+        .space = isspace((unsigned char)c) ? true : false,
+        .unset = (c == '\0')
+    };
+}
+
+/* charlist */
+static inline bool charlist_init(charlist_t *list, size_t max){
+    if (max <= list->cap) return true;
+
+    void *tmp = realloc(list->data, max * sizeof(char));
+    if (!tmp) return false;
+
+    list->data = (char*)tmp;
+    list->cap = max;
+    
+    return true;
+}
+
+static inline bool charlist_push(charlist_t *list, char c){
+    if (list->len == list->cap){
+        size_t newcap = (list->cap == 0) ? 8 : list->cap * 2;
+        if (!charlist_init(list, newcap)) return false;
+    }
+    list->data[list->len++] = c;
+    return true;
+}
+
+static inline void charlist_free(charlist_t *list){
+    free(list->data);
+    list->data = NULL;
+    list->len = 0;
+    list->cap = 0;
+}
+
+/* string view */
+static inline strview_t sv(const char *cstr){
+    return (strview_t) {
+        .data = cstr,
         .size = strlen(cstr),
     };
 }
 
 
-void sv_chop_left(strview_t *sv, size_t n){
+static inline void sv_chop_left(strview_t *sv, size_t n){
      if (n > sv->size) n = sv->size;
      sv->size -= n;
-     sv->str += n;
+     sv->data += n;
 }
 
-void sv_trim_left(strview_t *sv){
-    while (sv->size > 0 && isspace(sv->str[0])){
+static inline void sv_trim_left(strview_t *sv){
+    while (sv->size > 0 && isspace((unsigned char)sv->data[0])){
         sv_chop_left(sv, 1);
     }
 }
 
-void sv_chop_right(strview_t *sv, size_t n){
+static inline void sv_chop_right(strview_t *sv, size_t n){
     if (n > sv->size) n = sv->size;
     sv->size -= n;
 }
 
-void sv_trim_right(strview_t *sv){
-    while (sv->size > 0 && isspace(sv->str[sv->size - 1])){
+static inline void sv_trim_right(strview_t *sv){
+    while (sv->size > 0 && isspace((unsigned char)sv->data[sv->size - 1])){
         sv_chop_right(sv, 1);
     }
 }
 
-void sv_trim(strview_t *sv){
+static inline void sv_trim(strview_t *sv){
     sv_trim_left(sv);
     sv_trim_right(sv);
 }
 
+static inline strview_t sv_chop_by_delim(strview_t *sv, char delim){
+    size_t i = 0;
+    while (i < sv->size && sv->data[i] != delim) i++;
+
+    if (i < sv->size){
+        strview_t result = {
+            .data = sv->data,
+            .size = i,
+            .buffer = NULL
+        };
+        sv_chop_left(sv, i + 1);
+        return result;
+    }
+
+    strview_t result = *sv;
+    sv_chop_left(sv, sv->size);
+    return result;
+}
 
 
 
