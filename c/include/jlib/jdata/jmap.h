@@ -4,9 +4,9 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <stdint.h>
 #include <stddef.h>
+#include <stdbool.h>
 
 typedef struct StringBlock {
     char string[8];
@@ -41,6 +41,7 @@ typedef struct HashIndex {
     meta_t meta;
 } hashidx_t;
 
+static inline void hashidx_clear(hashidx_t *idx);
 
 typedef struct Entry {
     char *key;
@@ -105,13 +106,24 @@ typedef struct {
     /* something, something ... dark side ... */
 } Jmap;
 
-
-
 #endif /* JMAP_H */
-#define JMAP_IMPL // #debug-mode
+// #define JMAP_IMPL // #debug-mode
 #ifdef JMAP_IMPL
 
-static inline void entry_clear(entry_t *entry){ entry = {0}; }
+#include <string.h>
+
+void hashidx_clear(hashidx_t *idx) {
+    if (!idx) return;
+    memset(idx, 0, sizeof(*idx));
+}
+
+static inline void entry_clear(entry_t *entry){ 
+    // entry->key = NULL;
+    // entry->val = NULL;
+    // entry->hash = 0;
+    if (!entry) return;
+    memset(entry, 0, sizeof(*entry));
+}
 
 static inline entry_t entry_init(void){
     return ({ entry_t e; entry_clear(&e); e; });
@@ -124,7 +136,14 @@ static inline void entry_free(entry_t *entry){
     entry_clear(entry);
 }
 
-static inline void bucket_clear(bucket_t *bucket){ bucket = {0}; }
+static inline void bucket_clear(bucket_t *bucket){ 
+    bucket->entries = NULL;
+    hashidx_clear(&bucket->hashidx);
+    bucket->size = 0;
+    
+    
+    ; 
+}
 
 static inline bucket_t bucket_init(void){
     return ({ bucket_t b; bucket_clear(&b); b; });
@@ -197,7 +216,10 @@ static inline char *map_strdup(const char *src){
     return dst;
 }
 
-static inline void map_clear(map_t *map){ map = {0}; }
+static inline void map_clear(map_t *map){ 
+    if (!map) return;
+    memset(map, 0, sizeof(*map));
+}
 
 static inline map_t map_init(size_t cap){
     map_t map = {0};
