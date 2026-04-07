@@ -140,8 +140,8 @@ int main(void){
     check_size("map.cap after free", map.cap, 0);
 
     printf("\n=== summary ===\n");
-    printf("tests run   : %d\n", tests_run);
-    printf("tests failed: %d\n", tests_failed);
+    printf("tests run: %d\n", tests_run);
+    printf("!failures: %d\n", tests_failed);
 
     return (tests_failed == 0) ? 0 : 1;
 }
