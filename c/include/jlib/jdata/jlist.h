@@ -2,12 +2,12 @@
 #ifndef JLIST_H
 #define JLIST_H
 
-//#include <jtype.h>
-#include "jlib/jstd/jerr.h"
+#include <jany.h>
+#include <jstd/jerr.h>
 
 
 typedef struct Node {
-    uintptr_t xord;     //
+    uintptr_t xord;
     const char *data;
     void *next;
     void *prev;
@@ -15,30 +15,34 @@ typedef struct Node {
     bool seen;
 } node_t;
 
+node_t *new_node(int val, const char *data);
+
 typedef struct List {
-    const char *data;
     node_t *head;
     node_t *tail;
+    char *tmpbuf;
+    size_t bufcap;
     int size;
 } list_t;
 
-typedef struct {
-    Jerror errs;
-    list_t *list;
-    // list_t *lists;
-} Jlist;
-
 #define ll_add_xor(v) _ll_add_xor(v, #v)
 
-Jlist new_ll();
-node_t *new_node(int val, const char *data);
-void ll_del(Jlist *ll);
-void ll_add(Jlist *ll, const char *data);
-void ll_ins(Jlist *ll, int idx, const char *data);
-void _ll_add_xor(Jlist *ll, int value, const char *name);
+static inline list_t ll_new();
+static inline void ll_del(list_t *ll);
+static inline void ll_add(list_t *ll, const char *data);
+static inline void ll_ins(list_t *ll, int idx, const char *data);
+static inline void _ll_add_xor(list_t *ll, int value, const char *name);
 
-/* ! IMPLEMENTATION ! */
+typedef struct {
+    Jerror err;
+    list_t list;
+    list_t *lists;
+} Jlist;
+
+#endif /* JLIST_H */
+// #define JLIST_IMPL // #debug mode, normally doesn't exist
 #ifdef JLIST_IMPL
+/* ! IMPLEMENTATION ! */
 #include <stdlib.h>
 
 node_t *new_node(int val, const char *data){
@@ -49,20 +53,16 @@ node_t *new_node(int val, const char *data){
     return node;
 }
 
-Jlist new_ll(){
-    Jlist ll;
-    //char timestr[64];
-    ll.head = NULL;
+static inline list_t ll_new(){
+    list_t ll;
+    ll.head->data = "hello, world!\n";
     ll.tail = NULL;
-    ll.data = "hello, world\n";
-    ll.size = 0;
-    ll.err.systime = getnow();
-    //ll.err.time = 
-    ll.err.msg; // = "list created: ";
+    ll.size++;
+
     return ll;
 }
 
-void ll_ins(Jlist *ll, int idx, const char *data){
+void ll_ins(list_t *ll, int idx, const char *data){
 //     node_t *insert = (node_t*)malloc(sizeof(node_t));
 //     if (insert == NULL) return;
 
@@ -72,12 +72,12 @@ void ll_ins(Jlist *ll, int idx, const char *data){
     
 }
 
-void ll_add(Jlist *ll, const char *data){
+void ll_add(list_t *ll, const char *data){
     if (ll->head == NULL) 
     node_t *node = new_node(1, data);
 }
 
-void ll_del(Jlist *ll){
+void ll_del(list_t *ll){
     node_t *tmp;
     while (ll->head != NULL){
         tmp = ll->head;
@@ -86,7 +86,7 @@ void ll_del(Jlist *ll){
     }
 }
 
-void _ll_add_xor(Jlist *ll, int value, const char *name){
+void _ll_add_xor(list_t *ll, int value, const char *name){
     if (ll->head == NULL){
         //printf("[error] jlib: NULL found at end of linked list {%s}!", name);
         ll->tail = new_node(value, name);
@@ -101,7 +101,3 @@ void _ll_add_xor(Jlist *ll, int value, const char *name){
 }
 
 #endif /* JLIST_IMPL */
-
-
-
-#endif /* JLIST_H */
