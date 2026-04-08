@@ -8,7 +8,7 @@
 
 /* kinds of types */
 typedef enum Kind {
-    J_NONE = 0,
+    J_NULL = 0,
 /* _Generic C options */
     J_BOOL, J_CHAR, J_SCHAR, J_UCHAR,
 /* scalar values */
@@ -26,13 +26,13 @@ typedef enum Kind {
 /* generic pointers */
     J_PTR, J_CONST_PTR,
 /* fallback */
-    J_NULL, EXPRESSION,
+    EXPRESSION, UNKNOWN,
 /* custom types */
     J_CUSTOM, // boundary marker
     J_ANSI, J_ERROR, J_LIST, 
     J_MAP, J_STACK, J_TIME,  J_VEC,
     J_LOG, J_BITS, J_STRUCT, J_FUNC, 
-    J_ANY, J_VALUE, J_VOID,
+    J_ANY, J_VALUE, J_VOID, J_NONE,
 /* size variable */
     J_KINDSIZE
 } kind_t;
@@ -72,7 +72,7 @@ typeinfo_t typeinfo_init(kind_t kind);
 #include <stdlib.h>
 
 static const char *kind_names[J_KINDSIZE] = {
-    [J_NONE]      = "none",
+    [J_NULL]      = "null",
 
     /* _Generic C options */
     [J_BOOL]      = "bool",
@@ -114,12 +114,10 @@ static const char *kind_names[J_KINDSIZE] = {
     /* generic pointers */
     [J_PTR]       = "void *",
     [J_CONST_PTR] = "const void *",
-    [J_NULL]       = "null"
 };
 
 static const size_t kind_sizes[J_KINDSIZE] = {
-    [J_NONE]      = 0,
-    [J_NULL]      = sizeof(NULL),
+    [J_NULL]      = 0,
     [J_BOOL]      = sizeof(bool),
     [J_CHAR]      = sizeof(char),
     [J_SCHAR]     = sizeof(signed char),
@@ -154,8 +152,6 @@ static const size_t kind_sizes[J_KINDSIZE] = {
 
     [J_PTR]       = sizeof(void *),
     [J_CONST_PTR] = sizeof(const void *),
-
-    [J_NULL]      = 0,
 
     [J_CUSTOM]    = 0,
     [J_ANSI]      = 0,
