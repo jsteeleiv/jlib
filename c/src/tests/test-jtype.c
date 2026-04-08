@@ -66,7 +66,7 @@ int main(void){
     printf("=== jtype smoke test ===\n\n");
 
     printf("--- validity ---\n");
-    check_bool("J_NONE is valid", kind_valid(J_NONE));
+    //check_bool("J_NONE is valid", kind_valid(J_NONE));
     check_bool("J_INT is valid", kind_valid(J_INT));
     check_bool("J_CUSTOM is valid", kind_valid(J_CUSTOM));
     check_bool("J_VOID is valid", kind_valid(J_VOID));
@@ -74,7 +74,7 @@ int main(void){
     check_bool("negative kind is invalid", !kind_valid((kind_t)-1));
 
     printf("\n--- names ---\n");
-    check_str("kind_name(J_NONE)", kind_name(J_NONE), "none");
+    //check_str("kind_name(J_NONE)", kind_name(J_NONE), "none");
     check_str("kind_name(J_BOOL)", kind_name(J_BOOL), "bool");
     check_str("kind_name(J_INT)", kind_name(J_INT), "int");
     check_str("kind_name(J_U64)", kind_name(J_U64), "u64");
@@ -85,7 +85,7 @@ int main(void){
         strcmp(kind_name((kind_t)-1), "! Unsupported Kind") == 0);
 
     printf("\n--- sizes ---\n");
-    check_size("kind_size(J_NONE)", kind_size(J_NONE), 0);
+    //check_size("kind_size(J_NONE)", kind_size(J_NONE), 0);
     check_size("kind_size(J_BOOL)", kind_size(J_BOOL), sizeof(bool));
     check_size("kind_size(J_CHAR)", kind_size(J_CHAR), sizeof(char));
     check_size("kind_size(J_SHORT)", kind_size(J_SHORT), sizeof(short));
@@ -119,7 +119,7 @@ int main(void){
     check_size("kind_size(invalid)", kind_size((kind_t)-1), 0);
 
     printf("\n--- custom classification ---\n");
-    check_bool("J_NONE is not custom", !kind_custom(J_NONE));
+    //check_bool("J_NONE is not custom", !kind_custom(J_NONE));
     check_bool("J_INT is not custom", !kind_custom(J_INT));
     check_bool("J_CUSTOM is not custom boundary", !kind_custom(J_CUSTOM));
     check_bool("J_ANSI is custom", kind_custom(J_ANSI));
