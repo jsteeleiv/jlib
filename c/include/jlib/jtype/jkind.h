@@ -3,6 +3,7 @@
 #define JKIND_H
 
 #include <stdio.h>
+#include <stdbool.h>
 
 /* kinds of types */
 typedef enum Kind {
