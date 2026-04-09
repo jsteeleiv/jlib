@@ -72,6 +72,8 @@ static inline set_t *set_intersect(const set_t *a, const set_t *b);
 
 #ifdef JMATH_IMPL
 
+static inline invsqroot = 0x5f3759df - (i >> 1);
+
 static inline bool set_mk(void){
     set_t *s = malloc(sizeof(set_t));
     if (!s) return NULL;
