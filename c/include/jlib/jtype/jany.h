@@ -2,6 +2,13 @@
 #ifndef JANY_H
 #define JANY_H
 
+#include <stdio.h>
+#include <stddef.h>
+#include <stdint.h>
+#include <stdbool.h>
+#include <string.h>
+#include "jkind.h"
+
 /*
     The char* `escape hatch`
     `C` gives you ONE universal aliasing type:
@@ -14,13 +21,6 @@
 
     This is always safe.
 */
-
-#include <stdio.h>
-#include <stddef.h>
-#include <stdint.h>
-#include <stdbool.h>
-#include <string.h>
-#include "jtype.h"
 
 #define J_KINDOF(x) _Generic((x), \
     _Bool: J_BOOL, \
@@ -63,10 +63,11 @@ typedef struct AnyValue {
 } any_v;
 
 typedef struct Anything {
-    typeinfo_t info;
     const void *src;
     any_v type;
 } any_t;
+
+#define any_import(any, x) any_init((any), J_KINDOF(x), &(x))
 
 bool any_init(any_t *any, kind_t k, const void *src);
 kind_t any_kind(const any_t *any);
@@ -75,17 +76,11 @@ bool any_isnull(const any_t *any);
 bool any_setnull(any_t *any);
 //bool any_setnone(any_t *any);
 
-#define any_import(any, x) any_init((any), J_KINDOF(x), &(x))
 
-typedef struct ValueType {
-    any_t self;
-    any_v cast;
-} value_t;
-
-bool val_setcast(value_t *val, kind_t k);
 
 
 #endif /* JANY_H */
+// #define JANY_IMPL // #debug-mode
 #ifdef JANY_IMPL
 
 kind_t any_kind(const any_t *any){
@@ -100,7 +95,7 @@ bool any_setnull(any_t *any){
     if (!any) return false;
 
     memset(any, 0, sizeof(*any));
-    any->info = typeinfo_init(J_NULL);
+    //any->info = typeinfo_init(J_NULL);
     any->type.kind = J_NULL;
     any->src = NULL;
 
@@ -128,7 +123,7 @@ bool any_init(any_t *any, kind_t k, const void *src){
     if (size == 0 || size > sizeof(any->type.as)) return false;
     
     memset(any, 0, sizeof(*any));
-    any->info = typeinfo_init(k);
+    //any->info = typeinfo_init(k);
     any->type.kind = k;
     any->src = src;
 
@@ -137,16 +132,5 @@ bool any_init(any_t *any, kind_t k, const void *src){
     return true;
 }
 
-bool val_setcast(value_t *val, kind_t k){
-    if (!val || !kind_valid(k)) return false;
-    val->cast.kind = k;
-    return true;
-}
-
-bool val_castas(value_t *val, kind_t k){
-    if (!val || !kind_valid(k)) return false;
-    val->self.type.kind = k;
-    return true;
-}
 
 #endif /* JANY_IMPL */
