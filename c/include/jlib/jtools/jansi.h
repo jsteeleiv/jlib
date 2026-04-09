@@ -76,9 +76,9 @@ typedef struct {
 typedef struct AsciiMirror {
     char was;
     char is;
-} mirror_t;
+} asciimirror_t;
 
-static const mirror_t ascii_map[] = {
+static const asciimirror_t ascii_map[] = {
     {'(', ')'},
     {')', '('},
     {'[', ']'},
@@ -100,11 +100,11 @@ typedef struct Ascii {
     bool owns;
 } ascii_t;
 
-typedef struct {
-    Jerror errs;
-    ansi_t ansi;
-    ascii_t ascii;
-} Jascii;
+// typedef struct {
+//     error_t errs;
+//     ansi_t ansi;
+//     ascii_t ascii;
+// } Jascii;
 
 
 
@@ -126,16 +126,16 @@ static ascii_t *ascii_flip_vert(const ascii_t *src);
 void ascii_print(const ascii_t *a);
 char *ascii_to_string(const ascii_t *a);
 
-/* jascii lifecycle */
-Jascii *jascii_new(const char *text);
-void jascii_die(Jascii *j);
+// /* jascii lifecycle */
+// Jascii *jascii_new(const char *text);
+// void jascii_die(Jascii *j);
 
-/* jascii transforms */
-Jascii *jascii_flip_horz(const Jascii *j);
-Jascii *jascii_flip_vert(const Jascii *j);
+// /* jascii transforms */
+// Jascii *jascii_flip_horz(const Jascii *j);
+// Jascii *jascii_flip_vert(const Jascii *j);
 
-/* jascii output */
-void jascii_print(const Jascii *j);
+// /* jascii output */
+// void jascii_print(const Jascii *j);
 
 #endif /* JANSI_H */
 #ifdef JANSI_IMPL
