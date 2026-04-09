@@ -2,10 +2,10 @@
 #ifndef JMEM_H
 #define JMEM_H
 
-#include <jstd/jerr.h>
-#include <jfile.h>
-#include <jmap.h>
-#include <jstk.h>
+//#include ""
+#include "../jio.h"
+#include "../jdata/jmap.h"
+#include "../jdata/jstk.h"
 
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
