@@ -1,10 +1,12 @@
 #ifndef JERR_H
 #define JERR_H
 
+#include "../jstd.h"
 
-#include <jtools/jlog.h>
-#include <jtools/jansi.h>
+#include "../jtools.h"
+
 #include <jdata/jvec.h>
+#include <jfile.h>
 
 
 
@@ -48,15 +50,21 @@ typedef enum ErrorCode {
     ERR_TYPE_GENERIC = 400,
     ERR_TYPE_MISMATCH,
     ERR_TYPE_INVALID,
-    ERR_TYPE_UNKNOWN
+    ERR_TYPE_UNKNOWN,
+
+    ERRCODE_COUNT
 } errcode_t;
+
+// CREATE the bitmask like I did for the logcodes... with macros and all.
+// simplify all of the error related functions, use error_t over Jerror, I will define Jerror stuff later , way later?
+// clean up everything in the IMPL section to ensure no compiler errors ...
+
 
 typedef struct Error {
     errcode_t errcode;   // error code
+    file_t file;         // location of error {__FILE__, __LINE__, __FUNC__}
     time_t rawtime;      // error struct initialization time (raw tm)
-    const char *file;    // filepath, if applicable
-    const char *func;    // name of func on stack (caution: may be null)
-    const char *msg;     // jlib's error message (string)
+    const char *msg;     // msg to pass along (at least to the logger())
     int lives;           // if life == 0; die = true; (-1 = ♾️ )
     int line;            // number of line in question, in *file
     int exitcode;        // actual exit code -> propogated
@@ -71,6 +79,7 @@ typedef struct {
     Jansi ansi;          // ansi object (ascii, coloring, etc)
     Jlist list;          // list of errors
     Jlog log;
+    error_t err;
 } Jerror;
 
 
@@ -81,31 +90,31 @@ typedef struct {
 #define SET_E(e, msg, loglvl, logcode, errcode, exit, die) \
     set_e(__FILE__, __LINE__, __func__, (e), (msg), (loglvl), (logcode), (errcode), (exit), (die))
 
-Jerror init_e( 
+error_t init_e( 
     const char *file,
     char *func,
     const char *msg,
     int line,
-    loglvl_t loglvl,
-    logcode_t logcode,
+    //loglvl_t loglvl,
+    //logcode_t logcode,
     errcode_t errcode,
     int exitcode
 );
 
-Jerror set_e(
+error_t set_e(
     Jerror *e,
     char *msg,
     int line,
-    loglvl_t loglvl,
-    logcode_t logcode,
+    //loglvl_t loglvl,
+    //logcode_t logcode,
     errcode_t errcode,
     int exitcode,
     bool die
 );
 
-Jerror reset(Jerror *e, const char *opt, void *val, bool kill);
-void clear(Jerror *e);
-void kill(Jerror *e);
+error_t reset(error_t *e, const char *opt, void *val, bool kill);
+void clear(error_t *e);
+void kill(error_t *e);
 
 
 #endif /* JERR_H */
@@ -131,14 +140,11 @@ void kill(Jerror *e);
 //     bool die;            // should we die after some point?
 // } error_t;
 
-
-
-
-Jerror reset(Jerror *e, const char *opt, void *val, bool kill){
+error_t reset(error_t *e, const char *opt, void *val, bool kill){
     // TODO: figure out Jany generic type ...;
 }
 
-void clear(Jerror *e){
+void clear(error_t *e){
     if (!e) return;
     e->errtime.tstr = {NULL};
     e->log.logs.list = {NULL};

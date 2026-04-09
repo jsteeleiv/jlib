@@ -2,33 +2,43 @@
 #ifndef JSTK_H
 #define JSTK_H
 
-#include <jlib/jstd/jerr.h>
 #include <stddef.h>
+#include <stdbool.h>
+
+#include "../jtype.h"
+
+typedef struct Item {
+    value_t val;
+    void *abyss;
+    size_t size;
+    size_t cap;
+    char *repr;
+} item_t;
 
 typedef struct Stack{
-   void **items;
-   size_t size;
-   size_t max;
+    item_t *items;
+    void *abyss;
+    size_t size;
+    size_t cap;
 } stack_t;
 
 typedef struct {
-    Jerror jerr;
     info_t info;
     stack_t stack;
 } Jstack;
 
 #define STACK_MAX 16
 
-Jstack *mk_stack(void);
-Jerror init_stack(Jstack *s);
+stack_t *mk_stack(void);
+stack_t init_stack(Jstack *s);
 void rm_stack(Jstack *s);
 void free_stack(Jstack *s);
 static inline Jerror rsz_stack(Jstack *s);
 
 /* operations */
-Jerror push(stack_t *s, void *item);
-Jerror pull(stack_t *s);
-Jerror peek(stack_t *s);
+bool push(stack_t *s, void *item);
+value_t pull(stack_t *s);
+value_t peek(stack_t *s);
 
 
 

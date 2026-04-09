@@ -5,8 +5,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <jlib/jstd/jerr.h>
 
+#include "../jstd/jerr.h"
 
 
 // macro used to 'capture' the name of the variable (#v), for err message

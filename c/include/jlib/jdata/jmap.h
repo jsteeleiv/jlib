@@ -102,9 +102,9 @@ static inline int map_grow(map_t *map, size_t new_cap);
 static inline size_t map_index(const map_t *map, const char *key);
 static inline int map_rem(map_t *map, const char *key);
 
-typedef struct {
-    /* something, something ... dark side ... */
-} Jmap;
+// typedef struct {
+//     /* something, something ... dark side ... */
+// } Jmap;
 
 #endif /* JMAP_H */
 // #define JMAP_IMPL // #debug-mode

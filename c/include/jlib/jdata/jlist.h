@@ -2,9 +2,8 @@
 #ifndef JLIST_H
 #define JLIST_H
 
-#include <jany.h>
-#include <jstd/jerr.h>
-
+#include "../jtype.h"
+#include "../jstd/jerr.h"
 
 typedef struct Node {
     uintptr_t xord;

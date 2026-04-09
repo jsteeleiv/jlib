@@ -9,8 +9,13 @@
 #include <dirent.h>
 #include <string.h>
 
-//#include <jerr.h>
+#include "../jstd/jerr.h"
 
+typedef struct FileLocation {
+    const char *file;
+    const char *line;
+    const char *func;
+} fileloc_t;
 
 typedef struct FileInfo {
     size_t size;
@@ -18,13 +23,17 @@ typedef struct FileInfo {
     time_t modified;
     uint32_t mode;
     bool exists;
-    char *path;
+    char *path;  // mutable 'string' for runtime changes
 } fileinfo_t;
 
+typedef struct File {
+    fileinfo_t info;
+    fileloc_t loc;
+    FILE *handle;
+} file_t;
 
 #endif /* JFILE_H */
-
-
+#define JFILE_IMPL // #debug-mode
 #ifdef JFILE_IMPL
 
 FILE *jopen(const char *path, const char *rwb, Jerror *jerr){

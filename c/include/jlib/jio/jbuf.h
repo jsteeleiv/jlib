@@ -3,7 +3,8 @@
 #define JBUF_H
 
 #include <stdio.h>
-#include <jdata/jtype.h>
+
+#include "../jtype.h"
 
 /*  =========================
     BufferStatus

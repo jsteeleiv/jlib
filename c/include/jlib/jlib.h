@@ -14,10 +14,20 @@
 */
 
 
-#include <jdata.h>
-#include <jio.h>
-#include <jparse.h>
-#include <jstd.h>
-#include <jtools.h>
+#include "jalgo.h"
+#include "jdata.h"
+#include "jio.h"
+#include "jmath.h"
+#include "jmem.h"
+#include "jparse.h"
+#include "jstd.h"
+#include "jtools.h"
+#include "jtype.h"
 
 #endif /* JLIB_H */
+
+#ifdef JLIB_IMPL
+
+
+
+#endif

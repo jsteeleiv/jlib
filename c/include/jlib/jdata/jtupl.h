@@ -2,8 +2,8 @@
 #ifndef JTUPL_H
 #define JTUPL_H
 
-#include <jany.h>
-#include <jstd/jerr.h>
+#include "../jtype.h"
+#include "../jstd/jerr.h"
 
 typedef struct Tuple {
     value_t  *items;
@@ -23,7 +23,7 @@ static inline void tpl_clear(tuple_t *tpl);
 static inline void tpl_free(tuple_t *tpl);
 
 /* custom return type to support multiple return values */
-typedef struct ReturnValues {
+typedef struct ReturnType {
     tuple_t tuple;
     size_t index;
     uint8_t flags;
