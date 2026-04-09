@@ -3,7 +3,6 @@
 #define JSTR_H
 
 #include <stdio.h>
-#include <jstd/jerr.h>
 
 typedef struct CharInfo {
     char ch;
@@ -16,8 +15,14 @@ typedef struct CharInfo {
 
 static inline charinfo_t charinfo_at(strview_t sv, size_t i);
 
-typedef struct 
-CharList {
+typedef struct CharIterator {
+    charinfo_t info;
+    strview_t *parent;
+    size_t index;
+} chariter_t;
+
+typedef struct CharList {
+    chariter_t iter;
     char *data;
     size_t len;
     size_t cap;
@@ -46,21 +51,17 @@ static inline void sv_trim_right(strview_t *sv);
 static inline void sv_trim(strview_t *sv);
 static inline strview_t sv_chop_by_delim(strview_t *sv, char delim);
 
-typedef struct CharIterator {
-    strview_t *parent;
-    size_t index;
-} chariter_t;
 
 typedef struct String {
-    Jerror errs;
+    charlist_t chars;
     strview_t str;
-    size_t id;
-
+    void *addr;
 } string_t;
 
+static inline void str_toupper_inplace(char *s);
 
 #endif /* JSTR_H */
-#define JSTR_IMPL
+#define JSTR_IMPL // #debug-mode
 #ifdef JSTR_IMPL
 
 #include <string.h>
@@ -166,6 +167,8 @@ static inline strview_t sv_chop_by_delim(strview_t *sv, char delim){
     return result;
 }
 
-
+static inline void str_toupper_inplace(char *s){
+    for (; *s; ++s) { *s = (char)toupper((unsigned char)*s); }
+}
 
 #endif /* JSTR_IMPL */
