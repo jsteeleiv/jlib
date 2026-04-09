@@ -1,6 +1,7 @@
 .vscode/
 notes/
 c/src/tests/build/*
+c/src/examples/demos/
 
 pycache/
 *.pyc
