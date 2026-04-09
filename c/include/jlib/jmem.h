@@ -219,7 +219,7 @@ typedef unsigned int memctx_flags;
 
 // which memory system is managing this?
 typedef struct MemoryContext {
-    Jmap map; // custom map (key=value pairs; key == pointer as index)
+    map_t map; // custom map (key=value pairs; key == pointer as index)
     memcfg_t config;
     memflags_t flags;
     size_t rec_count;
