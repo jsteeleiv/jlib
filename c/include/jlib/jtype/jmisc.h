@@ -2,40 +2,65 @@
 #ifndef JMISC_H
 #define JMISC_H
 
-#include <jstd/jerr.h>
-
-typedef struct Bit {
-    uint8_t byte;
-    unsigned int val : 1; // occupies 1 bit
-} bit_t; // 2 bytes, even with the single bit `val`
+#include "../jstd.h"
+#include "../jdata/jvec.h"
 
 typedef struct Information {
-    error_t error;       // custom error type
+    vec_t *arrs;
     const char *mod;
     const char *ctx;
-    vec_t *data;
 } info_t;
 
+typedef struct Abyss {
+    void *ether;
+} abyss_t;
+
 typedef struct Random{
-    Jtime time;
+    chrono_t time;
     void *abyss;
-    int seed;
+    int64_t seed;
     float fval;
     int ival;
 } rand_t;
+
+typedef struct Fate {
+
+} fate_t;
+
+typedef struct Quest {
+    mirror_t reflection;
+    bool reflect;
+} quest_t;
+
+typedef struct Mirror {
+    char *was;
+    char *is;
+    fate_t fate;
+    quest_t *quest;
+} mirror_t;
+
+
+
+
+
+
 
 typedef struct {
     Jerror err;
     Jtime time;
     value_t type;
-    Jmap stars;
+    map_t stars;
     char *omen;
     char *read;
     bool omen;
 } Oracle;
 
-#endif /* JMISC_H */
 
+
+
+
+#endif /* JMISC_H */
+#define JMISC_IMPL // debug-mode
 #ifdef JMISC_IMPL
 
 
