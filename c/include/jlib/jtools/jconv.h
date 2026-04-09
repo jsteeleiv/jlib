@@ -11,9 +11,8 @@
 #include <setjmp.h>
 #include <jpeglib.h>
 
-#include <jlib/jstd/jerr.h>
-#include <jlib/jtools/jlog.h>
-
+#include "../jstd.h"
+#include "../jtype.h"
 
 typedef struct BIN_ARR {
     Jerror err;
@@ -24,12 +23,12 @@ typedef struct BIN_ARR {
     size_t pos;
     size_t cnt;
     size_t size;
-} bin_arr;
+} binarray_t;
 
 //int binConv(int b);
 char *to_base64(char *data, int size);
 int decToBin(int n); //prototyping the only manual function needed ???
-bArray ret_arr(bin_arr input, size_t size);
+binarray_t ret_arr(binarray_t input, size_t size);
 
 #ifdef JCONV_IMPL
 
