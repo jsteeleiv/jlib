@@ -86,7 +86,7 @@ static inline digitarr_t digitsort_asc(digitarr_t arr);
 static inline digitarr_t digitsort_desc(digitarr_t arr);
 
 #endif /* JMATH_H */
-#define JMATH_IMPL // #debug-mode
+// #define JMATH_IMPL // #debug-mode
 #ifdef JMATH_IMPL
 
 // static inline int invsqroot = 0x5f3759df - (i >> 1);
