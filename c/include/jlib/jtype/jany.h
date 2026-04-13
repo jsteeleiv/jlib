@@ -62,8 +62,14 @@ typedef struct AnyValue {
     } as; // <-- https://www.youtube.com/@TsodingDaily
 } any_v;
 
+typedef struct AnyInformation {
+    kind_t kind;
+    size_t size;
+} anyinfo_t;
+
 typedef struct Anything {
     const void *src;
+    anyinfo_t info;
     any_v type;
 } any_t;
 
