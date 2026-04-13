@@ -15,9 +15,9 @@
 #define JTYPE_FLAG_FINALIZED     (1u << 4)
 
 typedef struct TypeInfo {
+    const char *type;
     kind_t kind;
     size_t size;
-    char *type;
     bool jtype;
 } typeinfo_t;
 
