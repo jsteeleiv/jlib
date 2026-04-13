@@ -5,6 +5,8 @@
 #include "jtype/jany.h"
 #include "jtype/jdef.h"
 #include "jtype/jkind.h"
+#include "jtype/jfunc.h"
+#include "jtype/jfut.h"
 #include "jtype/jmisc.h"
 #include "jtype/jstr.h"
 #include "jtype/jval.h"
