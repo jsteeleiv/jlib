@@ -1,8 +1,6 @@
-#define JTYPE_IMPL
-#include "../../include/jlib/jdata/jtype.h"
-
 #define JANY_IMPL
-#include "../../include/jlib/jdata/jany.h"
+#include "../../include/jlib/jtype/jany.h"
+#include "../../include/jlib/jtype/jval.h"
 
 #include <stdio.h>
 #include <string.h>
