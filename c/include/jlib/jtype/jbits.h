@@ -902,7 +902,7 @@ static inline void demo_nand(uint8_t a, uint8_t b){
 
     printf("checks\n");
     printf("------\n");
-    printf("NOT match: %s\n", not8_from_nand(a)      == (uint8_t)(~a)     ? "yes" : "no");
+    printf("NOT match: %s\n", not8_from_nand(a)     == (uint8_t)(~a)     ? "yes" : "no");
     printf("AND match: %s\n", and8_from_nand(a, b)  == (uint8_t)(a & b)  ? "yes" : "no");
     printf("OR  match: %s\n", or8_from_nand(a, b)   == (uint8_t)(a | b)  ? "yes" : "no");
     printf("XOR match: %s\n", xor8_from_nand(a, b)  == (uint8_t)(a ^ b)  ? "yes" : "no");
