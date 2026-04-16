@@ -3,8 +3,9 @@
 #define JSTR_H
 
 #include <stdio.h>
+#include <stdbool.h>
 
-typedef struct CharInfo {
+typedef struct CharacterInfo {
     char ch;
     size_t idx;
     bool alpha;
@@ -13,15 +14,35 @@ typedef struct CharInfo {
     bool unset;
 } charinfo_t;
 
-static inline charinfo_t charinfo_at(strview_t sv, size_t i);
+// find info for a certain character by index
+static inline charinfo_t charinfo_at(strview_t sv, size_t idx);
 
-typedef struct CharIterator {
+typedef struct StringView {
+    const char *data;
+    size_t size;
+    char *tmp; // optional internal buffer
+} strview_t;
+
+// used to spread fields out before sending to printf()
+#define STR_FMT "%.*s"
+// printf(STR_FMT "\n", STR_ARG(s));
+#define STR_ARG(s) (s).size, (s).data
+
+static inline strview_t sv(const char *cstr);
+static inline void sv_chop_left(strview_t *sv,  size_t n);
+static inline void sv_trim_left(strview_t *sv);
+static inline void sv_chop_right(strview_t *sv, size_t n);
+static inline void sv_trim_right(strview_t *sv);
+static inline void sv_trim(strview_t *sv);
+static inline strview_t sv_chop_by_delim(strview_t *sv, char delim);
+
+typedef struct CharacterIterator {
     charinfo_t info;
     strview_t *parent;
     size_t index;
 } chariter_t;
 
-typedef struct CharList {
+typedef struct CharacterList {
     chariter_t iter;
     char *data;
     size_t len;
@@ -32,26 +53,6 @@ static inline bool charlist_init(charlist_t *list, size_t max);
 static inline bool charlist_push(charlist_t *list, char c);
 static inline void charlist_free(charlist_t *list);
 
-typedef struct StringView {
-    const char *data;
-    char *buffer;       // optional owned buffer
-    size_t size;
-} strview_t;
-
-// used to spread fields out before sending to printf()
-#define STR_FMT "%.*s"
-// printf(STR_FMT "\n", STR_ARG(s));
-#define STR_ARG(s) (s).size, (s).data
-
-strview_t sv(const char *cstr);
-static inline void sv_chop_left(strview_t *sv,  size_t n);
-static inline void sv_trim_left(strview_t *sv);
-static inline void sv_chop_right(strview_t *sv, size_t n);
-static inline void sv_trim_right(strview_t *sv);
-static inline void sv_trim(strview_t *sv);
-static inline strview_t sv_chop_by_delim(strview_t *sv, char delim);
-
-
 typedef struct String {
     charlist_t chars;
     strview_t str;
@@ -61,7 +62,7 @@ typedef struct String {
 static inline void str_toupper_inplace(char *s);
 
 #endif /* JSTR_H */
-#define JSTR_IMPL // #debug-mode
+// #define JSTR_IMPL // #debug-mode
 #ifdef JSTR_IMPL
 
 #include <string.h>
@@ -69,12 +70,12 @@ static inline void str_toupper_inplace(char *s);
 #include <stdlib.h>
 
 /* charinfo */
-static inline charinfo_t charinfo_at(strview_t sv, size_t i){
-    char c = (i < sv.size) ? sv.data[i] : '\0';
+static inline charinfo_t charinfo_at(strview_t sv, size_t idx){
+    char c = (idx < sv.size) ? sv.data[idx] : '\0';
     
     return (charinfo_t){
         .ch    = c,
-        .idx   = i,
+        .idx   = idx,
         .alpha = isalpha((unsigned char)c) ? true : false,
         .digit = isdigit((unsigned char)c) ? true : false,
         .space = isspace((unsigned char)c) ? true : false,
@@ -118,7 +119,6 @@ static inline strview_t sv(const char *cstr){
         .size = strlen(cstr),
     };
 }
-
 
 static inline void sv_chop_left(strview_t *sv, size_t n){
      if (n > sv->size) n = sv->size;
