@@ -1,12 +1,11 @@
+#pragma once
 #ifndef JERR_H
 #define JERR_H
 
 #include "../jstd.h"
-
 #include "../jtools.h"
+#include "jtime.h"
 
-#include <jdata/jvec.h>
-#include <jfile.h>
 
 
 
@@ -62,7 +61,8 @@ typedef enum ErrorCode {
 
 typedef struct Error {
     errcode_t errcode;   // error code
-    file_t file;         // location of error {__FILE__, __LINE__, __FUNC__}
+    tmstamp_t time;
+    file_t path;         // location of error {__FILE__, __LINE__, __FUNC__}
     time_t rawtime;      // error struct initialization time (raw tm)
     const char *msg;     // msg to pass along (at least to the logger())
     int lives;           // if life == 0; die = true; (-1 = ♾️ )
@@ -74,153 +74,139 @@ typedef struct Error {
 
 #define err_ok(e) ((e)->errcode == ERR_SUCCESS)
 
-typedef struct {
-    Jtime time;       // time object
-    Jansi ansi;          // ansi object (ascii, coloring, etc)
-    Jlist list;          // list of errors
-    Jlog log;
-    error_t err;
-} Jerror;
+typedef struct Fault {
+
+} fault_t;
+
+typedef struct Panic {
+
+} panic_t;
+
+typedef struct Exception {
+
+} except_t;
+
+typedef struct Signal {
+
+} signal_t;
+
+typedef struct Try {
+
+} try_t;
+
+typedef struct Catch {
+
+} catch_t;
+
+typedef struct Result {
+
+} result_t;
+
+/* try, catch, throw, raise, panic, finally 
+    stack unwinding, 
+    fault is lowlevel exception caused by current instruction
+    trap is a synchronous transfer of control caused intentionally by code
+    abort is a severe exception that usually cannot be meaningfully resumed.
+
+*/
+
+// typedef struct {
+//     Jtime time;       // time object
+//     Jansi ansi;          // ansi object (ascii, coloring, etc)
+//     Jlist list;          // list of errors
+//     Jlog log;
+//     error_t err;
+// } Jerror;
 
 
 /* TODO: edit macros to fit new structures error_t vs. Jerror */
-#define INIT_E(lives, msg, loglvl, logcode, errcode, exit) \
-    init_e(__FILE__, __LINE__, __func__, (lives), (msg), (loglvl), (logcode), (errcode), (exit))
+#define ERR_NEW( msg, err, exit) \
+    err_init(__FILE__, __LINE__, __func__, (msg), (err), (exit))
 
-#define SET_E(e, msg, loglvl, logcode, errcode, exit, die) \
-    set_e(__FILE__, __LINE__, __func__, (e), (msg), (loglvl), (logcode), (errcode), (exit), (die))
+#define ERR_SET(e, msg, err, exit, die) \
+    err_set(__FILE__, __LINE__, __func__, (e), (msg), (err), (exit), (die))
 
-error_t init_e( 
-    const char *file,
-    char *func,
-    const char *msg,
-    int line,
-    //loglvl_t loglvl,
-    //logcode_t logcode,
-    errcode_t errcode,
-    int exitcode
+static inline error_t err_init(const char *file, const char *func, int line, 
+    const char *msg, int err, int exit
 );
 
-error_t set_e(
-    Jerror *e,
-    char *msg,
-    int line,
-    //loglvl_t loglvl,
-    //logcode_t logcode,
-    errcode_t errcode,
-    int exitcode,
-    bool die
+static inline void err_set(error_t *e, const char *msg, int err,
+    int exit, bool die
 );
 
-error_t reset(error_t *e, const char *opt, void *val, bool kill);
-void clear(error_t *e);
-void kill(error_t *e);
+static inline void err_reset(error_t *e, const char *opt, void *val, bool kill);
+static inline void err_clear(error_t *e);
+static inline void err_kill(error_t *e);
 
 
 #endif /* JERR_H */
-#define JERR_IMPL
+#define JERR_IMPL //#debug-mode
 #ifdef JERR_IMPL
-/* TODO; finish implementing the implementations ... */
-// waiting to build Jany data type to handle generics; will change then
 #include <stdio.h>
 #include <errno.h>
 
-// typedef struct Error {
-//     errcode_t errcode;   // error code
-//     time_t rawtime;      // error struct initialization time (raw tm)
-//     const char *file;    // filepath, if applicable
-//     const char *func;    // name of func on stack (caution: may be null)
-//     const char *msg;     // jlib's error message (string)
-//     int lives;           // if life == 0; die = true; (-1 = ♾️ )
-//     int line;            // number of line in question, in *file
-//     int exitcode;        // actual exit code -> propogated
-//     logcode_t logcode;   // 
-//     loglvl_t loglvl;     // 
-//     bool passerr;        // if ERROR or higher write to stderr
-//     bool die;            // should we die after some point?
-// } error_t;
-
-error_t reset(error_t *e, const char *opt, void *val, bool kill){
-    // TODO: figure out Jany generic type ...;
-}
-
-void clear(error_t *e){
+static inline void err_clear(error_t *e){
     if (!e) return;
-    e->errtime.tstr = {NULL};
-    e->log.logs.list = {NULL};
-    e->time. = getnow();
+    e = NULL;
+    e->path.loc.file = NULL;
+    e->path.loc.line = NULL;
+    e->path.loc.func = NULL;
+    timestamp_refresh(&e->time);
 }
 
-void kill(Jerror *e){
-    e->life = 0;
+static inline void err_reset(error_t *e, const char *opt, void *val, bool kill){
+    if (!e) return;
+    if (kill) err_kill(&e);
+
+    err_clear(&e);
+    err_set(&e, opt, ERR_SUCCESS, 0, false);
+
+
+}
+
+static inline void err_kill(error_t *e){
+    e->lives = 0;
     e->die = true;
 }
 
-Jerror init_e(int lives, const char *file, const char *func, const char *msg, int line,
-    loglvl_t loglvl, logcode_t logcode, errcode_t errcode, int exitcode){
+static inline error_t err_init(const char *file, const char *func, int line,
+    const char *msg, int err, int exit){
     
     // initialize life
-    Jerror e = {0};
-    e.life = lives;
+    error_t e = {0};
+    e.lives = 9;
     e.die = false;
-
     //initialize time
-    Jtime t = init_t();
-    e.errtime = t;
-    e.init = t.raw;
-
-    e.file = file;
-    e.line = line;
-    e.func = func;
-    e.logcode = logcode;
-    e.errcode = errcode;
-    e.exitcode = exitcode;
-
+    tmstamp_t t = timestamp_init();
+    e.time = t;
+    e.rawtime = t.rawtime;
+    // initialize file location
+    e.path.loc.file = file;
+    e.path.loc.line = line;
+    e.path.loc.func = func;
+    e.errcode = err;
+    e.exitcode = exit;
     // prepend prefix
-    snprintf(e.tmpbuf, sizeof(e.tmpbuf), 
-        "[Jerror]: %s", msg ? msg : "message is null");
-
-    if (e.loglvl >= ERROR){
-        e.passerr = true;
-    }
-
-    e.msg = e.tmpbuf;
+    snprintf(e.msg, sizeof(e.msg), "[ERROR]: %s", msg ? msg : "message is null");
     return e;
 }
 
-/* TODO; make set_e functionality....*/
-void set_e( Jerror *e, const char *file, const char *func, const char *msg,
-    int line, Jloglvl loglvl, Jlogcode logcode, err_code errcode, int exitcode, bool die){
-    
-    // initialize error struct
-    // if(die) e->life--;
-    // if(e->life==0) kill(e);
-    if(die && --e->life == 0) kill(e);
-    //die ? e->--life==0 ? kill(e) :;
+static inline void err_set( error_t *e, const char *msg,
+    int err, int exit, bool die){
 
-    //initialize time struct
-    Jtime t = init_t();
-    e.errtime = t;
-    e.init = t.raw;
+    if(die && --e->lives == 0) err_kill(e);
+    //refresh time struct
+    timestamp_init(e->time);
+    e->errcode = err;
+    e->exitcode = exit;
+    // prepend prefix to message
+    snprintf(e->msg, sizeof(e->msg), "[ERROR]: %s", msg ? msg : "message is null");
 
-    // prepend prefix
-    snprintf(e.tmpbuf, sizeof(e.tmpbuf), 
-            "[Jerror]: %s", msg ? msg : "message is null");
-
-    if (e.loglvl >= ERROR){
-        e._stderr = true;
-    }
-
-    e.file = file;
-    e.line = line;
-    e.func = func;
-    e.msg = e.tmpbuf;
-    e.logcode = logcode;
-    e.errcode = errcode;
-    e.exitcode = exitcode;
-    e.die = false;
+    // TODO: Do I even need these? should the error stay with the file forever?
+    // --> or should an error be able to "swtich context" on the fly?
+    // e->path.loc.file = file;
+    // e->path.loc.line = line;
+    // e->path.loc.func = func;
 }
 
 #endif /* JERR_IMPL */
-
-
