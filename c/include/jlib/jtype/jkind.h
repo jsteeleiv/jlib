@@ -7,33 +7,33 @@
 
 /* kinds of types */
 typedef enum Kind {
-    J_NULL = 0,
+    ISNULL = 0,
 /* _Generic C options */
-    J_BOOL, J_CHAR, J_SCHAR, J_UCHAR,
+    BOOL, CHAR, SCHAR, UCHAR,
 /* scalar values */
-    J_SHORT, J_USHORT, J_INT, J_UINT,
-    J_LONG, J_ULONG, J_LLONG, J_ULLONG,
-    J_FLOAT, J_DOUBLE, J_LDOUBLE, 
+    SHORT, USHORT, INT, UINT,
+    LONG, ULONG, LLONG, ULLONG,
+    FLOAT, DOUBLE, LDOUBLE, 
 /* signed integers */
-    J_I8, J_I16, J_I32, J_I64,
+    I8, I16, I32, I64,
 /* unsigned integers */
-    J_U8, J_U16, J_U32, J_U64,
+    U8, U16, U32, U64,
 /* floating point */
-    J_F32, J_F64,
+    F32, F64,
 /* string types */
-    J_CSTR, J_STR,
+    CSTR, STR,
 /* generic pointers */
-    J_PTR, J_CONST_PTR,
+    PTR, CONST_PTR,
 /* fallback */
     EXPRESSION, UNKNOWN,
 /* custom types */
-    J_CUSTOM, // boundary marker
-    J_ANSI, J_ERROR, J_LIST, 
-    J_MAP, J_STACK, J_TIME,  J_VEC,
-    J_LOG, J_BITS, J_STRUCT, J_FUNC, 
-    J_ANY, J_VALUE, J_VOID, J_NONE,
+    CUSTOM, // boundary marker
+    ANSI, ERROR, LIST, 
+    MAP, STACK, TIME,  VEC,
+    LOG, BITS, STRUCT, FUNC, 
+    ANY, VALUE, VOID, NONE,
 /* size variable */
-    J_KINDSIZE
+    KINDSIZE
 } kind_t;
 
 const char *kind_name(kind_t k);
@@ -51,103 +51,103 @@ bool kind_scalar(kind_t k);
 
 #include <stdlib.h>
 
-static const char *kind_names[J_KINDSIZE] = {
-    [J_NULL]      = "null",
+static const char *kind_names[KINDSIZE] = {
+    [ISNULL]      = "null",
 
     /* _Generic C options */
-    [J_BOOL]      = "bool",
-    [J_CHAR]      = "char",
-    [J_SCHAR]     = "signed char",
-    [J_UCHAR]     = "unsigned char",
-    [J_SHORT]     = "short",
-    [J_USHORT]    = "unsigned short",
-    [J_INT]       = "int",
-    [J_UINT]      = "unsigned int",
-    [J_LONG]      = "long",
-    [J_ULONG]     = "unsigned long",
-    [J_LLONG]     = "long long",
-    [J_ULLONG]    = "unsigned long long",
-    [J_FLOAT]     = "float",
-    [J_DOUBLE]    = "double",
-    [J_LDOUBLE]   = "long double",
+    [BOOL]      = "bool",
+    [CHAR]      = "char",
+    [SCHAR]     = "signed char",
+    [UCHAR]     = "unsigned char",
+    [SHORT]     = "short",
+    [USHORT]    = "unsigned short",
+    [INT]       = "int",
+    [UINT]      = "unsigned int",
+    [LONG]      = "long",
+    [ULONG]     = "unsigned long",
+    [LLONG]     = "long long",
+    [ULLONG]    = "unsigned long long",
+    [FLOAT]     = "float",
+    [DOUBLE]    = "double",
+    [LDOUBLE]   = "long double",
 
     /* signed integers */
-    [J_I8]        = "i8",
-    [J_I16]       = "i16",
-    [J_I32]       = "i32",
-    [J_I64]       = "i64",
+    [I8]        = "i8",
+    [I16]       = "i16",
+    [I32]       = "i32",
+    [I64]       = "i64",
 
     /* unsigned integers */
-    [J_U8]        = "u8",
-    [J_U16]       = "u16",
-    [J_U32]       = "u32",
-    [J_U64]       = "u64",
+    [U8]        = "u8",
+    [U16]       = "u16",
+    [U32]       = "u32",
+    [U64]       = "u64",
 
     /* floating point */
-    [J_F32]       = "f32",
-    [J_F64]       = "f64",
+    [F32]       = "f32",
+    [F64]       = "f64",
 
     /* string types */
-    [J_CSTR]      = "const char *",
-    [J_STR]       = "char *",
+    [CSTR]      = "const char *",
+    [STR]       = "char *",
 
     /* generic pointers */
-    [J_PTR]       = "void *",
-    [J_CONST_PTR] = "const void *",
+    [PTR]       = "void *",
+    [CONST_PTR] = "const void *",
 };
 
-static const size_t kind_sizes[J_KINDSIZE] = {
-    [J_NULL]      = 0,
-    [J_BOOL]      = sizeof(bool),
-    [J_CHAR]      = sizeof(char),
-    [J_SCHAR]     = sizeof(signed char),
-    [J_UCHAR]     = sizeof(unsigned char),
-    [J_SHORT]     = sizeof(short),
-    [J_USHORT]    = sizeof(unsigned short),
-    [J_INT]       = sizeof(int),
-    [J_UINT]      = sizeof(unsigned int),
-    [J_LONG]      = sizeof(long),
-    [J_ULONG]     = sizeof(unsigned long),
-    [J_LLONG]     = sizeof(long long),
-    [J_ULLONG]    = sizeof(unsigned long long),
-    [J_FLOAT]     = sizeof(float),
-    [J_DOUBLE]    = sizeof(double),
-    [J_LDOUBLE]   = sizeof(long double),
+static const size_t kind_sizes[KINDSIZE] = {
+    [ISNULL]      = 0,
+    [BOOL]      = sizeof(bool),
+    [CHAR]      = sizeof(char),
+    [SCHAR]     = sizeof(signed char),
+    [UCHAR]     = sizeof(unsigned char),
+    [SHORT]     = sizeof(short),
+    [USHORT]    = sizeof(unsigned short),
+    [INT]       = sizeof(int),
+    [UINT]      = sizeof(unsigned int),
+    [LONG]      = sizeof(long),
+    [ULONG]     = sizeof(unsigned long),
+    [LLONG]     = sizeof(long long),
+    [ULLONG]    = sizeof(unsigned long long),
+    [FLOAT]     = sizeof(float),
+    [DOUBLE]    = sizeof(double),
+    [LDOUBLE]   = sizeof(long double),
 
-    [J_I8]        = sizeof(int8_t),
-    [J_I16]       = sizeof(int16_t),
-    [J_I32]       = sizeof(int32_t),
-    [J_I64]       = sizeof(int64_t),
+    [I8]        = sizeof(int8_t),
+    [I16]       = sizeof(int16_t),
+    [I32]       = sizeof(int32_t),
+    [I64]       = sizeof(int64_t),
 
-    [J_U8]        = sizeof(uint8_t),
-    [J_U16]       = sizeof(uint16_t),
-    [J_U32]       = sizeof(uint32_t),
-    [J_U64]       = sizeof(uint64_t),
+    [U8]        = sizeof(uint8_t),
+    [U16]       = sizeof(uint16_t),
+    [U32]       = sizeof(uint32_t),
+    [U64]       = sizeof(uint64_t),
 
-    [J_F32]       = sizeof(float),
-    [J_F64]       = sizeof(double),
+    [F32]       = sizeof(float),
+    [F64]       = sizeof(double),
 
-    [J_CSTR]      = sizeof(const char *),
-    [J_STR]       = sizeof(char *),
+    [CSTR]      = sizeof(const char *),
+    [STR]       = sizeof(char *),
 
-    [J_PTR]       = sizeof(void *),
-    [J_CONST_PTR] = sizeof(const void *),
+    [PTR]       = sizeof(void *),
+    [CONST_PTR] = sizeof(const void *),
 
-    [J_CUSTOM]    = 0,
-    [J_ANSI]      = 0,
-    [J_ERROR]     = 0,
-    [J_LIST]      = 0,
-    [J_MAP]       = 0,
-    [J_STACK]     = 0,
-    [J_TIME]      = 0,
-    [J_VEC]       = 0,
-    [J_LOG]       = 0,
-    [J_BITS]      = 0,
-    [J_STRUCT]    = 0,
-    [J_FUNC]      = 0,
-    [J_ANY]       = 0,
-    [J_VALUE]     = 0,
-    [J_VOID]      = 0
+    [CUSTOM]    = 0,
+    [ANSI]      = 0,
+    [ERROR]     = 0,
+    [LIST]      = 0,
+    [MAP]       = 0,
+    [STACK]     = 0,
+    [TIME]      = 0,
+    [VEC]       = 0,
+    [LOG]       = 0,
+    [BITS]      = 0,
+    [STRUCT]    = 0,
+    [FUNC]      = 0,
+    [ANY]       = 0,
+    [VALUE]     = 0,
+    [VOID]      = 0
 };
 
 const char *kind_name(kind_t k){
@@ -161,14 +161,14 @@ size_t kind_size(kind_t k){
 }
 
 bool kind_custom(kind_t k){
-    return (kind_valid(k) ? ((unsigned)k > J_CUSTOM) :false);
+    return (kind_valid(k) ? ((unsigned)k > CUSTOM) :false);
 }
 
 bool kind_valid(kind_t k) {
-    return (unsigned)k < J_KINDSIZE;
+    return (unsigned)k < KINDSIZE;
 }
 bool kind_scalar(kind_t k){
-    return ((unsigned)k >= J_SHORT && (unsigned)k <= J_F64);
+    return ((unsigned)k >= SHORT && (unsigned)k <= F64);
 }
 
 #endif /* JKIND_IMPL */
