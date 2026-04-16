@@ -22,7 +22,7 @@ typedef enum FutureError {
 typedef struct SharedState {
     mutex_t lock;
     condition_t ready;
-    future_st stat; 
+    future_st status; 
     void *value;
     char *error;
     int refcount;
@@ -63,7 +63,8 @@ typedef struct Future {
     error_t *error;
 } future_t;
 
-static void *future_get(future_t *f, void **val, void **err);
+static inline void future_init(future_t *f);
+static inline void *future_get(future_t *f, void **val, void **err);
 static inline void future_kill(future_t *f);
 
 typedef struct CoRoutine {
@@ -88,7 +89,7 @@ typedef struct CoRoutine {
         mutex_init(&state->lock);
         cond_init(&state->ready);
 
-        state->stat = FUT_PENDING;
+        state->status = FUT_PENDING;
         state->value = NULL;
         state->error = NULL;
         state->refcount = 2; // 1 for the promise one for the future
@@ -105,12 +106,12 @@ static inline int promise_set(promise_t *p, void *value){
     mutex_lock(&state->lock);
 
     // Prevent double fulfillment
-    if (state->stat != FUT_PENDING) {
+    if (state->status != FUT_PENDING) {
         mutex_unlock(&state->lock);
         return FUT_ERR_SATISFIED;
     }
     state->value = value;
-    state->stat = FUT_READY;
+    state->status = FUT_READY;
 
     // Wake all waiting futures
     cond_brcast(&state->ready);
@@ -124,14 +125,14 @@ static inline int promise_errset(promise_t *p, char *err){
     shrstate_t *state = p->ctrl->state;
     mutex_lock(&state->lock);
     // Prevent double fulfillment
-    if (state->stat != FUT_PENDING) {
+    if (state->status != FUT_PENDING) {
         mutex_unlock(&state->lock);
         return FUT_ERR_SATISFIED;
     }
 
     state->error = err;
     state->promise_broken = 0;
-    state->stat = FUT_FAILED;
+    state->status = FUT_FAILED;
 
     cond_broadcast(&state->ready);
     mutex_unlock(&state->lock);
@@ -141,8 +142,8 @@ static inline int promise_kill(promise_t *p){
     if (p == NULL || p->ctrl->state == NULL) return FUT_ERR_INVALID;
     shrstate_t *state = p->ctrl->state;
     mutex_lock(&state->lock);
-    if (state->stat == FUT_PENDING){
-        state->stat = FUT_FAILED;
+    if (state->status == FUT_PENDING){
+        state->status = FUT_FAILED;
         state->error = "broken promise 💔";
         cond_broadcast(&state->ready);
     }
@@ -152,12 +153,18 @@ static inline int promise_kill(promise_t *p){
     return FUT_OK;
 }
 
+static inline void future_init(future_t *f){
+    if (!f) return;
+    f->ctrl->state->status = FUT_PENDING;
+    f->ctrl->state->ready.valid = true;
+}
+
 static inline int future_status(future_t *f, future_st *st){
     if (f == NULL || f->ctrl->state == NULL || st == NULL) return FUT_ERR_INVALID;
 
     shrstate_t *state = f->ctrl->state;
     mutex_lock(&state->lock);
-    *st = state->stat;
+    *st = state->status;
     mutex_unlock(&state->lock);
     return FUT_OK;
 }
@@ -171,17 +178,17 @@ static void *future_get(future_t *f, void **val, void **err){
     // if (state_acquire(state) != 0) return NULL;
 
     mutex_lock(&state->lock);
-    while (state->stat == FUT_PENDING) {
+    while (state->status == FUT_PENDING) {
         cond_wait(&state->ready, &state->lock);
     }
 
-    if (state->stat == FUT_READY){
+    if (state->status == FUT_READY){
         if (val != NULL) *val = state->value;
         mutex_unlock(&state->lock);
         return FUT_OK;
     }
 
-    if (state->stat == FUT_FAILED){
+    if (state->status == FUT_FAILED){
         if (err != NULL) *err = state->error;
 
         int ret = state->promise_broken ? FUT_ERR_BROKEN_PROMISE : FUT_ERR_FALURE;
@@ -215,7 +222,7 @@ static inline shrstate_t *state_create(void){
         free(state); return NULL;
     }
 
-    state->stat = FUT_PENDING;
+    state->status = FUT_PENDING;
     state->value = NULL;
     state->error = NULL;
     state->refcount = 2;
