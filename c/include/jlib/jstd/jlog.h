@@ -102,16 +102,16 @@ typedef struct LogEvent {
     logflags flags;
     logcode code;   // LOG_CODE
     loglvl lvl;     // LOG_LVL
-    error_t error;    // error info to write in log, contains msg
+    logmask_t mask;
     chrono_t time;    // custom jlib time type
     uint32_t line;
 } logevent_t;
 
 typedef struct Logger {
     logfile_t logfile;
-    logevent_t event;
-    logmask_t logcodes;
+    logevent_t event; 
     loglvl minlvl;
+    error_t error;    // error info to write in log, contains msg
     char* tmpbuf;     // created based on error struct msg (+`\n`)
     size_t bufcap;
     uint32_t lastln;  // capture last line for meta reasons
@@ -125,17 +125,17 @@ static inline logger_t logger_init(logevent_t ev);
 
 
 
-typedef struct {
-    Jerror err;       // jlib's error struct  
-    Jtime time;       // jlib's time struct
-    Jansi ansi;       // theme coloring etc
-    logger_t logger;  // internal logger
-    char *buffer;     // tmp buffer to build strings
-} Jlog;
+// typedef struct {
+//     Jerror err;       // jlib's error struct  
+//     Jtime time;       // jlib's time struct
+//     Jansi ansi;       // theme coloring etc
+//     logger_t logger;  // internal logger
+//     char *buffer;     // tmp buffer to build strings
+// } Jlog;
 
 
-void print_log(const Jlog *log, bool err);
-void panic(Jlog *log);
+// void print_log(const Jlog *log, bool err);
+// void panic(Jlog *log);
 
 #endif /* JLOG_H */
 #define JLOG_IMPL // #debug-mode
@@ -145,7 +145,7 @@ void panic(Jlog *log);
 static inline logger_t logger_init(logevent_t ev){
     logger_t l;
     l.minlvl = LOGLVL_NONE;
-    l.logcodes = LOGCODE_BIT(LOG_INIT) | LOGCODE_BIT(LOG_MISC);
+    l.event.code = LOGCODE_BIT(LOG_INIT) | LOGCODE_BIT(LOG_MISC);
     l.bufcap = 1024;
     l.tmpbuf = "Hello, World!\n";
     l.lastln = 0;
@@ -168,18 +168,18 @@ static inline logger_t logger_init(logevent_t ev){
     */
 }
 
-void panic(Jlog *log){
-    if (!log) return;
-    log->err.err.die = true;
-    log->logger.event.lvl = LOGLVL_PANIC;
-    //log->err.err.errtime = init_t();
-}
+// void panic(Jlog *log){
+//     if (!log) return;
+//     log->err.err.die = true;
+//     log->logger.event.lvl = LOGLVL_PANIC;
+//     //log->err.err.errtime = init_t();
+// }
 
 
 
-void print_log(const Jlog *log, bool err){
-    printf("");
-}
+// void print_log(const Jlog *log, bool err){
+//     printf("");
+// }
 
 #endif /* JLOG_IMPL */
 

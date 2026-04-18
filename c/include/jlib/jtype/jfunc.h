@@ -6,6 +6,15 @@
 #include <stdlib.h>
 #include <stdint.h>
 
+/* usage:
+--------- 
+    somefunc(int a, func fn){
+        so some stuff ...
+        call 'fn' through the function pointer    
+    }
+*/
+typedef void (*func)(void);
+
 typedef enum ClosureEnvironmentMode {
     CLSR_ENV_NONE = 0,
     CLSR_ENV_BRRWD,

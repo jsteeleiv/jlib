@@ -52,6 +52,18 @@ typedef struct Page {
     uint8_t data[4096];
 } page_t;
 
+typedef struct Register {
+    union {
+        xmmword_t xmm;
+        ymmword_t ymm;
+        zmmword_t zmm;
+    } use;
+    char *debug;
+    block_t block;
+    page_t page;
+
+} reg_t;
+
 /* opcodes
     bits 7..6 = opcode   (2 bits)
     bits 5..3 = reg_a    (3 bits)
@@ -87,12 +99,10 @@ static inline const char *opcode_type(uint8_t opcode);
 /* instruction = (opcode << 6) | (reg_a << 3) | reg_b; */
 typedef struct Instruction {
     opcode_t opcode;
-    xmmword_t xmm;
-    ymmword_t ymm;
-    zmmword_t zmm;
+    reg_t *regs;
     byte_t src;
     byte_t dst;
-    bit_t flag;
+    uint32_t flags;
 } instr_t;
 
 static inline int reg_parse(const char *tok, int *reg);
@@ -112,6 +122,9 @@ static inline void prg_run(
         const char *title, const uint8_t *prg, int count, uint8_t regs[REG_COUNT]
 );
 
+typedef struct CPU {
+
+} cpu_t;
 
 #endif /* JCPU_H */
 #define JCPU_IMPL // #debug-mode

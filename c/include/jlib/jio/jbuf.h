@@ -4,7 +4,8 @@
 
 #include <stdio.h>
 
-#include "../jtype.h"
+#include "../jtype/jval.h"
+#include "../jstd/jerr.h"
 
 /*  =========================
     BufferStatus
@@ -47,7 +48,7 @@ static inline void bitwrit_set();
 
 typedef struct BitBuffer {
     bufstat_t status;
-    Jtype *data;
+    type_t *data;
     size_t head;
 } bitbuf_t;
 
@@ -61,14 +62,14 @@ typedef struct ByteArray {
     size_t length;
 } bytearr_t;
 
-static inline Jerror readfile_bArray(const char *path);
+static inline error_t readfile_bArray(const char *path);
 
 /*  =========================
     RingBuffer
     ========================= */
 
 typedef struct RingBuffer {
-    // Jtype *data;
+    // type_t *data;
     void *data;
     bufstat_t status;
     size_t head;
@@ -79,11 +80,11 @@ typedef struct RingBuffer {
     char cursor;
 } ringbuf_t;
 
-static inline void ringbuf_init(ringbuf_t *rb, Jtype *buf, size_t cap);
+static inline void ringbuf_init(ringbuf_t *rb, type_t *buf, size_t cap);
 static inline bool ringbuf_alloc(ringbuf_t *rb, size_t cap);
-static inline bool ringbuf_push(ringbuf_t *rb, Jtype *val);
-static inline bool ringbuf_pull(ringbuf_t *rb, Jtype *val);
-static inline bool ringbuf_peek(ringbuf_t *rb, Jtype *val);
+static inline bool ringbuf_push(ringbuf_t *rb, type_t *val);
+static inline bool ringbuf_pull(ringbuf_t *rb, type_t *val);
+static inline bool ringbuf_peek(ringbuf_t *rb, type_t *val);
 static inline void ringbuf_clear(ringbuf_t *rb);
 static inline void ringbuf_free(ringbuf_t *rb);
 
@@ -108,12 +109,12 @@ size_t gapbuf_get_curs(const gapbuf_t *gb);
 int gapbuf_set_curs(gapbuf_t *gb, size_t pos);
 int gapbuf_init(gapbuf_t *gb, size_t cap);
 void gapbuf_free(gapbuf_t *gb);
-int gapbuf_ins(gapbuf_t *gb, Jtype item);
+int gapbuf_ins(gapbuf_t *gb, type_t item);
 int gapbuf_back(gapbuf_t *gb);
 int gapbuf_del(gapbuf_t *gb);
 int gapbuf_mvleft(gapbuf_t *gb);
 int gapbuf_mvright(gapbuf_t *gb);
-int gapbuf_get_item(const gapbuf_t *gb, size_t idx, Jtype *item);
+int gapbuf_get_item(const gapbuf_t *gb, size_t idx, type_t *item);
 char *gapbuf_cstr(const gapbuf_t *gb);
 
 
@@ -127,8 +128,8 @@ char *gapbuf_cstr(const gapbuf_t *gb);
     ByteArray
     ========================= */
 
-static inline Jerror readfile_bArray(const char *path) {
-    Jerror jerr;
+static inline error_t readfile_bArray(const char *path) {
+    error_t jerr;
     FILE *f;
     bytearr_t arr;
     long file_sz;
@@ -189,7 +190,7 @@ static inline void ringbuf_clear(ringbuf_t *rb){
     rb->len = 0;
 }
 
-static inline void ringbuf_init(ringbuf_t *rb, Jtype *buf,  size_t cap){
+static inline void ringbuf_init(ringbuf_t *rb, type_t *buf,  size_t cap){
     rb->data = buf;
     rb->cap = cap;
     rb->head = 0;
@@ -199,7 +200,7 @@ static inline void ringbuf_init(ringbuf_t *rb, Jtype *buf,  size_t cap){
 }
 
 static inline bool ringbuf_alloc(ringbuf_t *rb, size_t cap){
-    rb->data = (Jtype *)malloc(sizeof(Jtype) * cap);
+    rb->data = (type_t *)malloc(sizeof(type_t) * cap);
     if (!rb) return false;
     rb->cap = cap;
     rb->head = 0;

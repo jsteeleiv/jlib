@@ -2,7 +2,6 @@
 #ifndef JLIST_H
 #define JLIST_H
 
-#include "../jtype.h"
 #include "../jstd/jerr.h"
 
 typedef struct Node {
@@ -33,7 +32,7 @@ static inline void ll_ins(list_t *ll, int idx, const char *data);
 static inline void _ll_add_xor(list_t *ll, int value, const char *name);
 
 typedef struct {
-    Jerror err;
+    error_t err;
     list_t list;
     list_t *lists;
 } Jlist;

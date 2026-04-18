@@ -3,6 +3,7 @@
 #define JTYPE_H
 
 #include "jtype/jany.h"
+#include "jtype/jcpu.h"
 #include "jtype/jdef.h"
 #include "jtype/jkind.h"
 #include "jtype/jfunc.h"
@@ -18,6 +19,10 @@
 //     value_t val;
 //     kind_t cast;
 // } Jtype;
+
+typedef struct Type {
+    val_t val;
+} type_t;
 
 
 

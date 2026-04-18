@@ -3,6 +3,7 @@
 #define JPARSE_H
 
 #include "jparse/jargs.h"
+#include "jparse/jedit.h"
 #include "jparse/jlex.h"
 #include "jparse/jregx.h"
 

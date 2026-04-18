@@ -39,6 +39,13 @@ typedef struct Mirror {
     fate_t fate;
 } mirror_t;
 
+typedef struct KeyMaster {
+
+} keymstr_t;
+
+typedef struct GateKeeper {
+
+} gatekpr_t;
 
 typedef struct Turing {
 

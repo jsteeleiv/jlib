@@ -2,13 +2,13 @@
 #ifndef JTIME_H
 #define JTIME_H
 
-#include <jansi.h>
-#include <jmap.h>
-
 #include <stdio.h>
 #include <stdbool.h>
 #include <string.h>
 #include <time.h>
+
+#include "../jdata/jmap.h"
+#include "../jdata/jlist.h"
 
 #define TFMT_ISO      "%Y-%m-%d %H:%M:%S"
 #define TFMT_FILENAME "%Y%m%d_%H%M%S"
@@ -165,9 +165,9 @@ typedef struct Chronometer {
     bool dst;
 } chrono_t;
 
-int chrono_init(chrono_t *ch, bool utc);
-int chrono_tick(chrono_t *ch);
-void chrono_freeze(chrono_t *ch);
+static inline int chrono_init(chrono_t *ch, bool utc);
+static inline int chrono_tick(chrono_t *ch);
+static inline void chrono_freeze(chrono_t *ch);
 
 typedef struct StopWatch {
     chrono_t curr;
@@ -178,14 +178,14 @@ typedef struct StopWatch {
 } stopwatch_t;
 
 //#pragma pack(1). look into
-typedef struct {
-    Jerror error;
-    Jansi ansi;
-    chrono_t clock;
-    tmstamp_t epoch;
-    stopwatch_t watch;
-    tmstamp_t *tstamps;
-} Jtime;
+// typedef struct {
+//     Jerror error;
+//     Jansi ansi;
+//     chrono_t clock;
+//     tmstamp_t epoch;
+//     stopwatch_t watch;
+//     tmstamp_t *tstamps;
+// } Jtime;
 
 #endif /* JTIME_H */
 #define JTIME_IMPL // #debug-mode
