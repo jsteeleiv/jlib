@@ -33,6 +33,7 @@ static inline int bit_find(uint8_t val, uint8_t patt, int w, int *pos, int max);
 static inline void bits_print(uint8_t val);
 /* print specific width */
 static inline void bits_printw(uint8_t val, int w);
+static inline void bits_printmax(bitpattern_64 val, size_t sz);
 
 typedef struct BitPattern {
     uint64_t pattern;
@@ -247,7 +248,7 @@ static inline void bitmask_print(uint8_t val){
     printf("\n");
 }
 
-void bits_printmax(bitpattern_64 val, size_t sz){
+static inline void bits_printmax(uint64_t val, size_t sz){
     for (size_t i = 0; i < sz; i++) {
         size_t bitidx = sz - 1 - i;
         printf("%u ", get_bit(val, bitidx));
