@@ -3,7 +3,6 @@
 #define JTYPE_H
 
 #include "jtype/jany.h"
-#include "jtype/jcpu.h"
 #include "jtype/jdef.h"
 #include "jtype/jkind.h"
 #include "jtype/jfunc.h"
@@ -12,6 +11,7 @@
 #include "jtype/jstr.h"
 #include "jtype/jval.h"
 
+typedef unsigned int uint;
 
 // typedef struct {
 //     Jerror err;
