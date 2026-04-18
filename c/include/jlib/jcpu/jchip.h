@@ -9,6 +9,14 @@
 
 #define PIN_MAX 64
 
+typedef enum PinType {
+    PIN_VCC = 0,
+    PIN_GND,
+    PIN_A,
+    PIN_B,
+    PIN_Y
+} pintype_t;
+
 typedef enum PinState {
     PIN_LOW = 0,
     PIN_HIGH = 1,
@@ -17,7 +25,6 @@ typedef enum PinState {
     PIN_IRQ,
     PIN_ERR,
     PIN_NULL, /* passive || dead || unused */
-    PIN_TAIL
 } pinstate_t;
 
 typedef enum PinDirection {
@@ -50,6 +57,7 @@ typedef struct Pin {
     pinstate_t next;   /* next state for staged updates */
     uint64_t number;   /* physical package pin number */
     // uint64_t mask;     /* bitmask [?] */
+    pintype_t type;
     pindir_t dir;      /* IN / OUT / BI / etc */
     void *wire;        /* optional external connection */
 } pin_t;
@@ -59,64 +67,14 @@ typedef struct Pin {
 #define PIN_IS_OUT(pin) ((pin)->dir == PIN_DIR_OUT)
 #define PIN_IS_BI(pin)  ((pin)->dir == PIN_DIR_BI)
 
-/* if
------
-    (pin_asserted(&chip->pins[PIN_RESET])) {
-       do stuff ...
-
-    INSTEAD OF:
-    if (reset_is_bar ? state == LOW : state == HIGH)
-}*/
-static inline int pin_asserted(const pin_t *pin){
-    if (!pin) return 0;
-    if (pin->flags & PIN_FLAG_BAR) {
-        return pin->state == PIN_LOW;
-    }
-    return pin->state == PIN_HIGH;
-}
-
-/* write
---------
-    pin_write_assert(&chip->pins[PIN_IRQ], 1);
-*/
-static inline void pin_write_assert(pin_t *pin, int asserted){
-    if (!pin) return;
-    if (pin->flags & PIN_FLAG_BAR) {
-        pin->next = asserted ? PIN_LOW : PIN_HIGH;
-    } else {
-        pin->next = asserted ? PIN_HIGH : PIN_LOW;
-    }
-}
-
+static inline int pin_asserted(const pin_t *pin);
+static inline void pin_write_assert(pin_t *pin, int asserted);
+static inline void pin_commit(pin_t *pin);
+static inline void pin_set(pin_t *pin, pinstate_t state);
+static inline pinstate_t pin_read(const pin_t *pin);
 static inline void pin_init(pin_t *pin, const char *name, uint64_t num,
-  pindir_t dir, pinflags_t flags ){
-
-    if (!pin) return;
-
-    pin->name   = name;
-    pin->number = num;
-    pin->dir    = dir;
-    pin->flags  = flags;
-    pin->state  = PIN_X;
-    pin->next   = PIN_X;
-    pin->wire   = NULL;
-}
-
-static inline void pin_commit(pin_t *pin){
-    if (!pin) return;
-    pin->state = pin->next;
-}
-
-static inline void pin_set(pin_t *pin, pinstate_t state){
-    if (!pin) return;
-    pin->next = state;
-}
-
-static inline pinstate_t pin_read(const pin_t *pin){
-    if (!pin) return PIN_X;
-    return pin->state;
-}
-
+    pindir_t dir, pinflags_t flags
+);
 
 typedef enum ChipKind {
     /* DOIT: sort these by category ... */
@@ -309,5 +267,73 @@ typedef struct Chip {
 #ifdef JCHIP_IMPL
 
 
+/* Pin Usage:
+---------
+    pin_t pins[PIN_TAIL];
+
+    pin_init(&pins[PIN_A],   "A",   1, PIN_DIR_IN,  PIN_FLAG_NONE);
+    pin_init(&pins[PIN_B],   "B",   2, PIN_DIR_IN,  PIN_FLAG_NONE);
+    pin_init(&pins[PIN_Y],   "Y",   3, PIN_DIR_OUT, PIN_FLAG_NONE);
+    pin_init(&pins[PIN_VCC], "VCC", 14, PIN_DIR_PWR, PIN_FLAG_NONE);
+    pin_init(&pins[PIN_GND], "GND", 7,  PIN_DIR_PWR, PIN_FLAG_NONE);
+*/
+
+/* if
+-----
+    (pin_asserted(&chip->pins[PIN_RESET])) {
+       do stuff ...
+
+    INSTEAD OF:
+    if (reset_is_bar ? state == LOW : state == HIGH)
+}*/
+static inline int pin_asserted(const pin_t *pin){
+    if (!pin) return 0;
+    if (pin->flags & PIN_FLAG_BAR) {
+        return pin->state == PIN_LOW;
+    }
+    return pin->state == PIN_HIGH;
+}
+
+/* write
+--------
+    pin_write_assert(&chip->pins[PIN_IRQ], 1);
+*/
+static inline void pin_write_assert(pin_t *pin, int asserted){
+    if (!pin) return;
+    if (pin->flags & PIN_FLAG_BAR) {
+        pin->next = asserted ? PIN_LOW : PIN_HIGH;
+    } else {
+        pin->next = asserted ? PIN_HIGH : PIN_LOW;
+    }
+}
+
+static inline void pin_init(pin_t *pin, const char *name, uint64_t num,
+  pindir_t dir, pinflags_t flags){
+
+    if (!pin) return;
+
+    pin->name   = name;
+    pin->number = num;
+    pin->dir    = dir;
+    pin->flags  = flags;
+    pin->state  = PIN_X;
+    pin->next   = PIN_X;
+    pin->wire   = NULL;
+}
+
+static inline void pin_commit(pin_t *pin){
+    if (!pin) return;
+    pin->state = pin->next;
+}
+
+static inline void pin_set(pin_t *pin, pinstate_t state){
+    if (!pin) return;
+    pin->next = state;
+}
+
+static inline pinstate_t pin_read(const pin_t *pin){
+    if (!pin) return PIN_X;
+    return pin->state;
+}
 
 #endif /* JCHIP_IMPL */
