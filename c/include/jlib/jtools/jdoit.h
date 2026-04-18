@@ -11,9 +11,11 @@ typedef enum DoItTag {
     DOIT_TAG_DOIT,
     DOIT_TAG_NOTE,
     DOIT_TAG_JLIB,
+    DOIT_TAG_WIKI,
     DOIT_TAG_TODO,
     DOIT_TAG_WARN,
     DOIT_TAG_HACK,
+    DOIT_TAG_CHECK,
     DOIT_TAG_BUGGY,
     DOIT_TAG_FIXME,
     DOIT_TAG_TODONT,
@@ -122,9 +124,11 @@ static inline const char *doit_tag2str(doittag_t tag){
         case DOIT_TAG_DOIT:      return "DOIT";
         case DOIT_TAG_NOTE:      return "NOTE";
         case DOIT_TAG_JLIB:      return "JLIB";
+        case DOIT_TAG_WIKI:      return "WIKI";
         case DOIT_TAG_TODO:      return "TODO";
         case DOIT_TAG_WARN:      return "WARN";
         case DOIT_TAG_HACK:      return "HACK";
+        case DOIT_TAG_CHECK:     return "CHECK";
         case DOIT_TAG_BUGGY:     return "BUGGY";
         case DOIT_TAG_FIXME:     return "FIXME";
         case DOIT_TAG_TODONT:    return "TODONT";
@@ -143,9 +147,11 @@ static inline doittag_t doit_str2tag(const char *s){
     if (strcmp(s, "DOIT") == 0) return DOIT_TAG_DOIT;
     if (strcmp(s, "NOTE") == 0) return DOIT_TAG_NOTE;
     if (strcmp(s, "JLIB") == 0) return DOIT_TAG_JLIB;
+    if (strcmp(s, "WIKI") == 0) return DOIT_TAG_WIKI;
     if (strcmp(s, "TODO") == 0) return DOIT_TAG_TODO;
     if (strcmp(s, "WARN") == 0) return DOIT_TAG_WARN;
     if (strcmp(s, "HACK") == 0) return DOIT_TAG_HACK;
+    if (strcmp(s, "CHECK") == 0) return DOIT_TAG_CHECK;
     if (strcmp(s, "BUGGY") == 0) return DOIT_TAG_BUGGY;
     if (strcmp(s, "FIXME") == 0) return DOIT_TAG_FIXME;
     if (strcmp(s, "TODONT") == 0) return DOIT_TAG_TODONT;
