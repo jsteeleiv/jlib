@@ -4,7 +4,7 @@
 
 #include <stdio.h>
 
-#include "../jtype/jval.h"
+#include "../jtype.h"
 #include "../jstd/jerr.h"
 
 /*  =========================

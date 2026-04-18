@@ -2,8 +2,13 @@
 #ifndef JVAL_H
 #define JVAL_H
 
+/* include sub-libraries */
+#include "../jval/jany.h"
+#include "../jval/jdef.h"
+#include "../jval/jkind.h"
+
+
 #include <stdbool.h>
-#include "jdef.h"
 
 typedef struct ValueType {
     typedef_t type;

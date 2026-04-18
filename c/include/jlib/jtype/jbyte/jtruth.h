@@ -227,7 +227,7 @@ typedef struct LogicDefinition {
     logickind_t srckind;
     union {
         bigateinfo_t builtin;
-        ExpressionInfo expr;
+        // ExpressionInfo expr;
         ttinfo_t table;
     } source;
 } lgcdef_t;
@@ -245,11 +245,11 @@ typedef struct LogicDevice {
     const char **labels_in;
     const char **labels_out;
     const char *name;
-    static size_t input_sz;
-    static size_t output_sz;
+    size_t input_sz;
+    size_t output_sz;
     union {
         bigateinfo_t builtin;
-        ExpressionInfo expr;
+        // exprinfo_t expr;
         ttinfo_t table;
     } source;
 } lgcdev_t;

@@ -2,9 +2,7 @@
 #ifndef JTYPE_H
 #define JTYPE_H
 
-#include "jtype/jany.h"
-#include "jtype/jdef.h"
-#include "jtype/jkind.h"
+#include "jtype/jbyte.h"
 #include "jtype/jfunc.h"
 #include "jtype/jfut.h"
 #include "jtype/jmisc.h"

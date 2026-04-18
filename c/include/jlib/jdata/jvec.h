@@ -60,7 +60,7 @@ typedef struct Vector {
 } vec_t;
 
 typedef struct {
-    Jerror err;
+    error_t err;
     vec_t vec;
 } Jvec;
 

@@ -2,6 +2,13 @@
 #ifndef JARCH_H
 #define JARCH_H
 
+/* include sub-libraries */
+#include "jarch/jmips.h"
+#include "jarch/jriscv.h"
+#include "jarch/jsys.h"
+#include "jarch/jx64.h"
+#include "jarch/jx86.h"
+
 #include <stdbool.h>
 #include <stdlib.h>
 

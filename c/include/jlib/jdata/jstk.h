@@ -8,7 +8,7 @@
 #include "../jtype.h"
 
 typedef struct Item {
-    value_t val;
+    val_t val;
     void *abyss;
     size_t size;
     size_t cap;
@@ -33,12 +33,12 @@ stack_t *mk_stack(void);
 stack_t init_stack(Jstack *s);
 void rm_stack(Jstack *s);
 void free_stack(Jstack *s);
-static inline Jerror rsz_stack(Jstack *s);
+static inline error_t rsz_stack(Jstack *s);
 
 /* operations */
 bool push(stack_t *s, void *item);
-value_t pull(stack_t *s);
-value_t peek(stack_t *s);
+val_t pull(stack_t *s);
+val_t peek(stack_t *s);
 
 
 

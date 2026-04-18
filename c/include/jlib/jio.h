@@ -5,6 +5,10 @@
 #include "jio/jbuf.h"
 #include "jio/jecho.h"
 #include "jio/jfile.h"
+#include "jio/jkeys.h"
+#include "jio/jproc.h"
+#include "jio/jterm.h"
+#include "jio/jtui.h"
 
 
 // #endif /* JIO_H */

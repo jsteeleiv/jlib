@@ -15,11 +15,13 @@
 
 
 #include "jalgo.h"
+#include "jarch.h"
+#include "jcpu.h"
 #include "jdata.h"
 #include "jio.h"
+#include "jlex.h"
 #include "jmath.h"
 #include "jmem.h"
-#include "jparse.h"
 #include "jstd.h"
 #include "jtools.h"
 #include "jtype.h"

@@ -21,7 +21,7 @@ typedef HANDLE Fd;
 
 #define JSTR_IMPL
 #include "../jtype/jstr.h"
-#include "../jstd/jarch.h"
+#include "../jarch.h"
 
 typedef struct Command {
     cstrarr_t line;

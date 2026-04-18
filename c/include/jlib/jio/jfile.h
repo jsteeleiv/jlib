@@ -39,7 +39,7 @@ int closedir(DIR *dirp);
 #define JSTR_IMPL
 #include "../jtype/jstr.h"
 #include "../jstd/jerr.h"
-#include "../jio/jproc.h"
+#include "jproc.h"
 
 
 #define MAX_FILES 128

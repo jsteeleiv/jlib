@@ -5,7 +5,7 @@
 #include <assert.h>
 
 #define JPROC_IMPL
-#include "../jstd/jproc.h"
+#include "../jio/jproc.h"
 
 #ifndef REBUILD
 #  if _WIN32

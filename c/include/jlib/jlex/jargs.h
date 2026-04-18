@@ -16,10 +16,10 @@
 #include <stdarg.h>
 #include <stdbool.h>
 
+#include "../jtype.h"
 #include "../jdata/jvec.h"
 #include "../jstd/jerr.h"
 #include "../jstd/jlog.h"
-#include "../jtype/jkind.h"
 
 typedef enum HasArgument {
     ARGP_NO= 0, ARGP_OK, ARGP_MYB

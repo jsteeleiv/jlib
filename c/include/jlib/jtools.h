@@ -5,6 +5,7 @@
 #include "jtools/jansi.h"
 #include "jtools/jconv.h"
 #include "jtools/jdocs.h"
+#include "jtools/jdoit.h"
 #include "jtools/jmake.h"
 #include "jtools/jmoji.h"
 #include "jtools/jusb.h"

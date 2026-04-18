@@ -5,7 +5,6 @@
 #include <stdlib.h>
 #include <limits.h>
 #include <stdbool.h>
-#include <jlib/jlib.h>
 
 #ifndef VEC_CAP
 #define VEC_CAP 8

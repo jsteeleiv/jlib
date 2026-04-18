@@ -39,7 +39,6 @@ typedef uint16_t memop_flags;
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
 
-
 // wrap flags in struct
 typedef struct MemoryOperation {
     memop_flags *flags;

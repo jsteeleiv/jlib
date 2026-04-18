@@ -2,14 +2,14 @@
 #ifndef JSET_H
 #define JSET_H
 
-#include "jval.h"
+#include "../jtype.h"
 
 #ifndef SET_CAP
 #define SET_CAP 8
 #endif
 
 typedef struct Set {
-    value_t *data;
+    val_t *data;
     size_t size;
     size_t cap;
 } set_t;
@@ -19,10 +19,10 @@ static inline set_t *set_mk(void);
 static inline void set_die(set_t *set);
 
 /* basic operations */
-static inline bool set_ins(set_t *set, value_t val);
-static inline bool set_del(set_t *set, value_t val);
+static inline bool set_ins(set_t *set, val_t val);
+static inline bool set_del(set_t *set, val_t val);
 static inline bool set_rsz(set_t *set, size_t cap);
-static inline bool set_has(const set_t *set, value_t val);
+static inline bool set_has(const set_t *set, val_t val);
 static inline void set_print(const set_t *set);
 static inline size_t set_size(const set_t *set);
 
@@ -39,7 +39,7 @@ static inline set_t *set_intersect(const set_t *a, const set_t *b);
 static inline set_t *set_mk(void){
     set_t *s = (set_t*) malloc(sizeof(set_t));
     if (!s) return NULL;
-    s->data = (value_t*) malloc(SET_CAP * sizeof(value_t));
+    s->data = (val_t*) malloc(SET_CAP * sizeof(val_t));
     if (!s->data){
         free(s);
         return NULL;
@@ -55,7 +55,7 @@ static inline void set_die(set_t *s){
     free(s);
 }
 
-static inline bool set_ins(set_t *s, value_t val){
+static inline bool set_ins(set_t *s, val_t val){
     if (!s) return false;
     if (set_has(s, val)) return false;
     if (s->size == s->cap){
@@ -65,7 +65,7 @@ static inline bool set_ins(set_t *s, value_t val){
     return true;
 }
 
-static inline bool set_del(set_t *s, value_t val){
+static inline bool set_del(set_t *s, val_t val){
     if (!s) return false;
     for (size_t i = 0; i < s->size; i++){
         if (s->data[i].type.any.src == val.type.any.src){
@@ -78,14 +78,14 @@ static inline bool set_del(set_t *s, value_t val){
 }
 
 static inline bool set_rsz(set_t *s, size_t cap){
-    value_t *val = (value_t*) realloc(s->data, cap * sizeof(value_t));
+    val_t *val = (val_t*) realloc(s->data, cap * sizeof(val_t));
     if (!val) return false;
     s->data = val;
     s->cap = cap;
     return true;
 }
 
-static inline bool set_has(set_t *s, value_t val){
+static inline bool set_has(set_t *s, val_t val){
     if (!s) return false;
     for (size_t i = 0; i < s->size; i++){
         if (s->data[i].type.any.src == val.type.any.src) return true;

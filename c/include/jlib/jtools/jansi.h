@@ -2,11 +2,13 @@
 #ifndef JANSI_H
 #define JANSI_H
 
+#include "../jstd/jerr.h"
+#include "../jlex/jargs.h"
+
+
 //#include <stdio.h>
 #include <stdbool.h>
 #include <stddef.h>
-#include <jlib/jstd/jerr.h>
-#include <jlib/jparse/jargs.h>
 
 #define ANSI_NONE 0
 

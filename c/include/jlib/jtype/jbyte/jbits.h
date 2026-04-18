@@ -2,9 +2,11 @@
 #ifndef JBITS_H
 #define JBITS_H
 
+/* include sub-libraries */ 
+#include "../jval.h"
+#include "../jstr.h"
+
 #include <stdlib.h>
-#include "jkind.h"
-#include "jstr.h"
 
 #define MAX_DIGITS 1024
 

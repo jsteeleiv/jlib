@@ -21,7 +21,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-#include "../jtype/jbits.h"
+#include "../jtype.h"
 
 typedef uint64_t addr_t;
 typedef int64_t addrdiff_t;

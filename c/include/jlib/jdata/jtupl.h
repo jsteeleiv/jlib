@@ -6,7 +6,7 @@
 #include "../jstd/jerr.h"
 
 typedef struct Tuple {
-    value_t  *items;
+    val_t  *items;
     size_t  size;
     size_t  cap;
 } tuple_t;
