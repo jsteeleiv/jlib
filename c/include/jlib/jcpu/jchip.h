@@ -5,7 +5,7 @@
 #include <stdlib.h>
 
 #include "../jdata/jmap.h"
-#include "../jtype/jstr.h"
+#include "../jtype.h"
 
 #define PIN_MAX 64
 
@@ -67,11 +67,13 @@ typedef struct Pin {
 #define PIN_IS_OUT(pin) ((pin)->dir == PIN_DIR_OUT)
 #define PIN_IS_BI(pin)  ((pin)->dir == PIN_DIR_BI)
 
-static inline int pin_asserted(const pin_t *pin);
-static inline void pin_write_assert(pin_t *pin, int asserted);
 static inline void pin_commit(pin_t *pin);
-static inline void pin_set(pin_t *pin, pinstate_t state);
+static inline int pin_read_assert(pin_t *pin);
+static inline int pin_asserted(const pin_t *pin);
+static inline pinstate_t pin_invert(pinstate_t s);
 static inline pinstate_t pin_read(const pin_t *pin);
+static inline void pin_set(pin_t *pin, pinstate_t state);
+static inline void pin_write_assert(pin_t *pin, int asserted);
 static inline void pin_init(pin_t *pin, const char *name, uint64_t num,
     pindir_t dir, pinflags_t flags
 );
@@ -201,7 +203,7 @@ typedef enum ChipAttributes {
 } chipattr_t;
 
 typedef struct ChipVoltage {
-    float vcc_nom;
+    float vcc_nom; /* nominal */
     float vcc_min;
     float vcc_max;
     /* voltage in, low/high */
@@ -218,18 +220,29 @@ typedef struct ChipVoltage {
 
 typedef enum ChipTiming {
     CHIP_TIME_NONE = 0,
+    CHIP_TIME_TICK,
     CHIP_TIME_CYCLE,
-    CHIP_TIME_TICKED,
-    CHIP_TIME_SEQUENTIAL,
+    CHIP_TIME_SEQUE,
+    CHIP_TIME_SYNC,
+    CHIP_TIME_ASYNC,
+    CHIP_TIME_COMBO,
     CHIP_TIME_FUNCTIONAL,
-    CHIP_TIME_SYNCHRONOUS,
-    CHIP_TIME_ASYNCHRONOUS,
-    CHIP_TIME_COMBINATIONAL,
     CHIP_TIME_ANALOG_APPROX,
     CHIP_TIME_EDGE_TRIGGERED,
-    CHIP_TIME_PROPAGATION_DELAY,
+    CHIP_TIME_PROP_DELAY,
+    /* ~~~~~~~~~~~~~~~~~~~~~ */
+
     CHIP_TIME_TAIL,
 } chiptime_t;
+
+typedef enum ChipLogic {
+    CHIP_LOGIC_DEASSERTED = 0,
+    CHIP_LOGIC_ASSERTED   = 1,
+    CHIP_LOGIC_FLOATING   = 2,
+    CHIP_LOGIC_UNKNOWN    = 3
+} chiplgc_t;
+
+static inline chiplgc_t chip_read_logic(const pin_t *pin);
 
 typedef struct ChipInformation {
     chipkind_t kind;
@@ -276,6 +289,16 @@ typedef struct Chip {
     pin_init(&pins[PIN_Y],   "Y",   3, PIN_DIR_OUT, PIN_FLAG_NONE);
     pin_init(&pins[PIN_VCC], "VCC", 14, PIN_DIR_PWR, PIN_FLAG_NONE);
     pin_init(&pins[PIN_GND], "GND", 7,  PIN_DIR_PWR, PIN_FLAG_NONE);
+
+    If one pin were /RESET:
+
+    chip_pin_init(&pins[PIN_RESET], "RESET", 40, CHIP_PDIR_IN, CHIP_PFL_BAR);
+
+    and then:
+
+    if (chip_pin_is_asserted(&pins[PIN_RESET])) {
+        ... reset is active 
+    }
 */
 
 /* if
@@ -300,11 +323,30 @@ static inline int pin_asserted(const pin_t *pin){
 */
 static inline void pin_write_assert(pin_t *pin, int asserted){
     if (!pin) return;
-    if (pin->flags & PIN_FLAG_BAR) {
-        pin->next = asserted ? PIN_LOW : PIN_HIGH;
-    } else {
-        pin->next = asserted ? PIN_HIGH : PIN_LOW;
-    }
+    if (pin->state != PIN_LOW && pin->state != PIN_HIGH) return;
+    // if (pin->flags & PIN_FLAG_BAR) {
+    //     pin->next = asserted ? PIN_LOW : PIN_HIGH;
+    // } else {
+    //     pin->next = asserted ? PIN_HIGH : PIN_LOW;
+    // }
+    /* ^ branching
+    OH NO!
+       v branchless ... oh yea ... from like 5 lines -> 2 lines */
+    unsigned int isbar = (pin->flags & PIN_FLAG_BAR) != 0;
+    pin->next = (pinstate_t)(asserted ^ isbar);
+    /* why this works ^ 
+    ... XOR truth table
+    -------------------
+    | asserted | isbar  | result   |
+    | -------- | ------ | -------- |
+    | 0        | 0      | 0 (LOW)  |
+    | 1        | 0      | 1 (HIGH) |
+    | 0        | 1      | 1 (HIGH) |
+    | 1        | 1      | 0 (LOW)  |
+
+    */
+
+
 }
 
 static inline void pin_init(pin_t *pin, const char *name, uint64_t num,
@@ -321,6 +363,10 @@ static inline void pin_init(pin_t *pin, const char *name, uint64_t num,
     pin->wire   = NULL;
 }
 
+static inline pinstate_t pin_invert(pinstate_t s){
+    return (pinstate_t)(s ^ 1);
+}
+
 static inline void pin_commit(pin_t *pin){
     if (!pin) return;
     pin->state = pin->next;
@@ -335,5 +381,35 @@ static inline pinstate_t pin_read(const pin_t *pin){
     if (!pin) return PIN_X;
     return pin->state;
 }
+
+static inline int pin_read_assert(pin_t *pin){
+    if (!pin) return 0;
+    if (pin->state != PIN_LOW && pin->state != PIN_HIGH) return 0; 
+    uint isbar = (pin->flags & PIN_FLAG_BAR) != 0;
+    return ((uint)pin->state ^ isbar) & 1u;
+}
+
+
+
+
+static inline chiplgc_t chip_read_logic(const pin_t *pin){
+    if (!pin) return CHIP_LOGIC_UNKNOWN;
+
+    switch (pin->state) {
+    case PIN_LOW:
+    case PIN_HIGH: {
+        uint is_bar = (pin->flags & PIN_FLAG_BAR) != 0;
+        return (chiplgc_t)(((uint)pin->state ^ is_bar) & 1u);
+    }
+    case PIN_Z:
+        return CHIP_LOGIC_FLOATING;
+    case PIN_X:
+    default:
+        return CHIP_LOGIC_UNKNOWN;
+    }
+}
+
+
+
 
 #endif /* JCHIP_IMPL */
