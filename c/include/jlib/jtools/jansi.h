@@ -66,10 +66,10 @@ typedef struct Jansi {
     style_t style;
 } ansi_t;
 
-typedef struct {
-    Jerror errs;
-    ansi_t ansi;
-} Jansi;
+// typedef struct {
+//     error_t errs;
+//     ansi_t ansi;
+// } Jansi;
 
 /* ASCII */
 
@@ -100,6 +100,7 @@ typedef struct Ascii {
     bool owns;
 } ascii_t;
 
+
 // typedef struct {
 //     error_t errs;
 //     ansi_t ansi;
@@ -108,7 +109,7 @@ typedef struct Ascii {
 
 
 
-static inline Jerror ansi_print(style_t fmt, const char *msg, Jarg args);
+static inline error_t ansi_print(style_t fmt, const char *msg, Jarg args);
 static inline void ansi_reset(void);
 static inline void ansi_fg(color_t color, int bold);
 
