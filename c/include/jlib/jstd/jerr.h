@@ -2,12 +2,12 @@
 #ifndef JERR_H
 #define JERR_H
 
-#include "../jstd.h"
-#include "../jtools.h"
+#include <stdarg.h>
+
 #include "jtime.h"
+#include "../jio/jfile.h"
 
-
-
+typedef const char * Cstr;
 
 typedef enum ErrorCode {
     ERR_SUCCESS = 0,
@@ -139,6 +139,14 @@ static inline void err_clear(error_t *e);
 static inline void err_kill(error_t *e);
 
 
+// use GetLastErrorAsString everywhere on Windows error reporting
+/*     
+  // https://stackoverflow.com/questions/1387064/how-to-get-the-error-message-from-the-error-code-returned-by-getlasterror
+*/
+// typedef const char * LPSTR;
+// LPSTR GetLastErrorAsString(void);
+
+
 #endif /* JERR_H */
 #define JERR_IMPL //#debug-mode
 #ifdef JERR_IMPL
@@ -203,10 +211,50 @@ static inline void err_set( error_t *e, const char *msg,
     snprintf(e->msg, sizeof(e->msg), "[ERROR]: %s", msg ? msg : "message is null");
 
     // TODO: Do I even need these? should the error stay with the file forever?
-    // --> or should an error be able to "swtich context" on the fly?
+    // --> or should an error be able to "switch context" on the fly?
     // e->path.loc.file = file;
     // e->path.loc.line = line;
     // e->path.loc.func = func;
+}
+
+void VLOG(FILE *stream, Cstr tag, Cstr fmt, va_list args)
+{
+    fprintf(stream, "[%s] ", tag);
+    vfprintf(stream, fmt, args);
+    fprintf(stream, "\n");
+}
+
+void INFO(Cstr fmt, ...)
+{
+    va_list args;
+    va_start(args, fmt);
+    VLOG(stderr, "INFO", fmt, args);
+    va_end(args);
+}
+
+void WARN(Cstr fmt, ...)
+{
+    va_list args;
+    va_start(args, fmt);
+    VLOG(stderr, "WARN", fmt, args);
+    va_end(args);
+}
+
+void ERRO(Cstr fmt, ...)
+{
+    va_list args;
+    va_start(args, fmt);
+    VLOG(stderr, "ERR", fmt, args);
+    va_end(args);
+}
+
+void PANIC(Cstr fmt, ...)
+{
+    va_list args;
+    va_start(args, fmt);
+    VLOG(stderr, "DIE", fmt, args);
+    va_end(args);
+    exit(1);
 }
 
 #endif /* JERR_IMPL */
