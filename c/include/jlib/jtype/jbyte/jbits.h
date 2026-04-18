@@ -8,6 +8,11 @@
 
 #define MAX_DIGITS 1024
 
+typedef uint8_t  bitpattern_8;
+typedef uint16_t bitpattern_16;
+typedef uint32_t bitpattern_32;
+typedef uint64_t bitpattern_64;
+
 /* Bit structure
 ----------------
     An attempt at representing a bit
@@ -18,15 +23,21 @@ typedef struct Bit {
 } bit_t; // 2 bytes, even with the single bit `val`
 
 /* single bit functions */
+static inline int bit_get(uint8_t byte, int pos);
 static inline void bit_set(uint8_t *byte, int pos);
 static inline void bit_del(uint8_t *byte, int pos);
 static inline void bit_tgl(uint8_t *byte, int pos);
-static inline int bit_get(uint8_t byte, int pos);
 static inline void bit_scan(uint8_t val, uint8_t patt, int w);
-static inline int bit_findpos(uint8_t val, uint8_t patt, int w, int *pos, int max);
-
+static inline int bit_find(uint8_t val, uint8_t patt, int w, int *pos, int max);
+/* basic print */
 static inline void bits_print(uint8_t val);
-static inline void bits_print_width(uint8_t val, int w);
+/* print specific width */
+static inline void bits_printw(uint8_t val, int w);
+
+typedef struct BitPattern {
+    uint64_t pattern;
+    size_t bit_width;
+} bitpatt_t;
 
 /* BitField structure */
 typedef struct BitField {
@@ -126,124 +137,7 @@ static inline uint8_t mask_clear(uint8_t val, mask_t mask);
 static inline uint8_t mask_toggle(uint8_t val, mask_t mask);
 
 
-/* Logic Gates
---------------
-    The goal is to build practically everything out of nand gates
-        ... at some point at least
-    ------------------------------
-    NOT(a) = NAND(a, a)
-    AND(a, b) = NOT(NAND(a, b))
-    OR(a, b) = NAND(NOT(a), NOT(b))
-    XOR(a, b) = built from 4 NANDs
 
-    NAND(a, b) = NOT (a AND b)
-    NOT(a) = NAND(a, a) | because -> NAND(a, a) = ~(a & a) = ~a 
-*/
-
-// 0000
-typedef struct NoGate {
-    /* Always outputs 0 || NULL -> (Contradiction) */
-} no_t;
-
-// 00.00
-typedef struct NotGate {
-    /* Negation of value(s) */
-
-} not_t;
-
-// 0001
-typedef struct AndGate {
-    /* AND(a, b) = NOT(NAND(a, b)) \
-        | compute NAND(a, b) -> invert it using NAND(x, x) */
-    byte_t a, b;
-} and_t;
-
-// 0010
-typedef struct AbutNotBGate {
-    /* true only when is A is true and is B false */
-
-} abutnotb_t;
-
-// 0011
-typedef struct DoAGate {
-    /* Output simply follows input `A` -> (Pass-through) */
-} doa_t;
-
-// 0100
-typedef struct BbutNotAGate {
-    /* true only when is A is false and is B is true */
-
-} aandnotb_t;
-
-// 0101
-typedef struct DoBGate {
-    /* Output simply follows input `B` -> (Pass-through) */
-} dob_t;
-
-// 0110
-typedef struct XorGate {
-    /* Output is 1 if inputs are different
-        t1 = NAND(a, b)
-        t2 = NAND(a, t1)
-        t3 = NAND(b, t1)
-        XOR = NAND(t2, t3)
-    */
-    byte_t a, b;
-} xor_t;
-
-// 0111
-typedef struct OrGate {
-    /* Output is 1 if at least one input is 1.
-        By De Morgan’s law:
-            Using NAND form -> OR(a, b) = NAND(NOT(a), NOT(b)) */
-    byte_t a, b;
-} or_t;
-
-// 1000
-typedef struct NorGate {
-    /* 	Inverse of OR; true only if both are 0 */
-
-} nor_t;
-
-// 1001
-typedef struct XnorGate {
-    /* 	Inverse of XOR; true if inputs are the same */
-
-} xnor_t;
-
-// 1010
-typedef struct NotBGate {
-    /* Output is the inverse of B */
-    byte_t a, b;
-} notb_t;
-
-// 1011
-typedef struct AfromBGate {
-    /* 	Only false if A is true and B is false */
-
-} afromb_t;
-
-typedef struct NotAGate {
-    /* Output is the inverse of A */
-} nota_t;
-
-// 1101
-typedef struct BfromAGate {
-    /* Only false if is A true and is B false */
-
-} bfroma_t;
-
-// 1110
-typedef struct NandGate {
-    /* Inverse of AND; true unless both are 1 */
-
-} nand_t;
-
-// 1111
-typedef struct YesGate {
-    /* 	Always outputs 1 (Tautology) */
-    int val;
-} yes_t;
 
 static inline uint8_t nand8(uint8_t a, uint8_t b);
 static inline uint16_t nand16(uint16_t a, uint16_t b);
@@ -303,17 +197,15 @@ static inline int endian_isbig(void){
 static inline uint16_t swap16(uint16_t x){ return (uint16_t)((x >> 8) | (x << 8)); }
 
 static inline uint32_t swap32(uint32_t x){
-    return ((x >> 24) & 0x000000FFu) |
-           ((x >>  8) & 0x0000FF00u) |
-           ((x <<  8) & 0x00FF0000u) |
-           ((x << 24) & 0xFF000000u);
+    return ((x >> 24) & 0x000000FFu) | ((x >>  8) & 0x0000FF00u) |
+           ((x <<  8) & 0x00FF0000u) | ((x << 24) & 0xFF000000u);
 }
 
 /* bits */
-static inline void bit_set(uint8_t *byte, int pos){ *byte |= (1 << pos); }
-static inline void bit_del(uint8_t *byte, int pos){ *byte &= ~(1 << pos); }
-static inline void bit_tgl(uint8_t *byte, int pos){ *byte ^= (1 << pos); }
-static inline int bit_get(uint8_t byte, int pos){ return (byte >> pos) & 1; }
+static inline void bit_set(uint8_t *byte, int pos){ *byte |= (1u << pos); }
+static inline void bit_del(uint8_t *byte, int pos){ *byte &= ~(1u << pos); }
+static inline void bit_tgl(uint8_t *byte, int pos){ *byte ^= (1u << pos); }
+static inline int bit_get(uint8_t byte, int pos){ return (byte >> pos) & 1u; }
 
 static inline void bit_scan(uint8_t val, uint8_t patt, int w){
     printf("value   = ");
@@ -321,19 +213,19 @@ static inline void bit_scan(uint8_t val, uint8_t patt, int w){
     printf("  (0x%02X)\n", val);
 
     printf("pattern = ");
-    bits_print_width(patt, w);
+    bits_printw(patt, w);
     printf("  (width=%d)\n\n", w);
 
     for (int s = 0; s <= 8 - w; ++s) {
         uint8_t window = extract_window(val, s, w);
         printf("start=%d  window=", s);
-        bits_print_width(window, w);
+        bits_printw(window, w);
         if (window == patt) printf("   MATCH");
         printf("\n");
     }
 }
 
-int bit_findpos(uint8_t val, uint8_t patt, int w, int *pos, int max){
+int bit_find(uint8_t val, uint8_t patt, int w, int *pos, int max){
     int c = 0;
     for (int s = 0; s <= 8 - w; ++s) {
         uint8_t window = extract_window(val, s, w);
@@ -341,18 +233,25 @@ int bit_findpos(uint8_t val, uint8_t patt, int w, int *pos, int max){
     }
     return c;
 }
-
+/* printing bits in various ways */
 static inline void bits_print(uint8_t val){
     for (int i = 7; i >= 0; --i) {printf("%u", (val >> i) & 1u);}
 }
 
-static inline void bits_print_width(uint8_t val, int w){
+static inline void bits_printw(uint8_t val, int w){
     for (int i = w - 1; i <= 0; --i){ printf("%u", (val >> i) & 1u); }
 }
 
 static inline void bitmask_print(uint8_t val){
     for (int i = 7; i >= 0; --i) {printf("%u", (val >> i) & 1u);}
     printf("\n");
+}
+
+void bits_printmax(bitpattern_64 val, size_t sz){
+    for (size_t i = 0; i < sz; i++) {
+        size_t bitidx = sz - 1 - i;
+        printf("%u ", get_bit(val, bitidx));
+    }
 }
 
 /* bit-packing
