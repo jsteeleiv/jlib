@@ -11,6 +11,15 @@
 		purposely over-engineered
 	> Likely to never see the light of day...	
 
+ --------------------------------------------------------- 
+ Configuration                                             
+ --------------------------------------------------------- 
+
+#ifndef J***_API
+#define J***_API static inline <====== WHAT ?
+#endif
+
+
 */
 
 
