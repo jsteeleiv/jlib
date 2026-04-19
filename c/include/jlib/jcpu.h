@@ -9,15 +9,40 @@
 #define PRG_MAX 64
 #define LINE_MAX 128
 
-#define FLAG_READ   (1u << 0)
-#define FLAG_WRITE  (1u << 1)
-#define FLAG_EXEC   (1u << 2)
-#define FLAG_HIDDEN (1u << 3)
+#define CPU_FLAG_READ   (1u << 0)
+#define CPU_FLAG_WRITE  (1u << 1)
+#define CPU_FLAG_EXEC   (1u << 2)
+#define CPU_FLAG_HIDDEN (1u << 3)
 
 static inline void flag_set(uint8_t *flags, uint8_t flag);
 static inline void flag_del(uint8_t *flags, uint8_t flag);
 static inline void flag_tgl(uint8_t *flags, uint8_t flag);
 static inline int flag_has(uint8_t flags, uint8_t flag);
+
+
+/* Behavior (important distinction):
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    IRQ
+        Level-triggered (held LOW)
+        Ignored if Interrupt Disable flag (I) is set
+    NMI
+        Edge-triggered (falling edge)
+        Always handled
+*/
+
+
+/*
+divide by zero
+invalid memory access
+illegal instruction
+page fault
+alignment fault
+*/
+
+/* clock signal (Φ0 / Φ1 / Φ2) */
+typedef struct CpuClock {
+
+} cpuclck_t;
 
 static inline uint16_t build_header(
     uint8_t vrs, uint8_t typ, uint8_t len, uint8_t urg
@@ -164,10 +189,10 @@ static inline void print_flags(uint8_t flags) {
     bits_print(flags);
     printf("\n");
 
-    printf("  READ   : %s\n", flag_has(flags, FLAG_READ)   ? "on" : "off");
-    printf("  WRITE  : %s\n", flag_has(flags, FLAG_WRITE)  ? "on" : "off");
-    printf("  EXEC   : %s\n", flag_has(flags, FLAG_EXEC)   ? "on" : "off");
-    printf("  HIDDEN : %s\n", flag_has(flags, FLAG_HIDDEN) ? "on" : "off");
+    printf("  READ   : %s\n", flag_has(flags, CPU_FLAG_READ)   ? "on" : "off");
+    printf("  WRITE  : %s\n", flag_has(flags, CPU_FLAG_WRITE)  ? "on" : "off");
+    printf("  EXEC   : %s\n", flag_has(flags, CPU_FLAG_EXEC)   ? "on" : "off");
+    printf("  HIDDEN : %s\n", flag_has(flags, CPU_FLAG_HIDDEN) ? "on" : "off");
 }
 
 
