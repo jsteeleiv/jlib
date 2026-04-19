@@ -6,6 +6,14 @@
 #include <stdbool.h>
 
 #include "jaddr.h"
+#include "../jtype/jbyte.h"
+
+typedef enum BusSignals {
+    BUS_SIG_WRITE = 0,
+    BUS_SIG_READ,
+    BUS_SIG_SYNC,
+    BUS_SIG_READY,
+} bussig_t;
 
 typedef enum jbus_dev_kind {
     BUS_DEV_NONE = 0,
@@ -37,11 +45,21 @@ typedef struct BusMap {
 
 typedef struct Bus {
     busmap_t *maps;
-    const char *name;
+    intptr_t addr;
+    byte_t *data;
     size_t len;
     size_t cap;
     uint32_t flags;
+    const char *name;
 } bus_t;
+
+typedef struct AddressBus {
+    bus_t wire;
+} addrbus_t;
+
+typedef struct DataBus {
+    bus_t wire;
+}databus_t;
 
 static inline bool bus_init(bus_t *bus, busmap_t *maps, size_t cap);
 static inline void bus_reset(bus_t *bus);
