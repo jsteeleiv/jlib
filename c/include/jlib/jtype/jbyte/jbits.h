@@ -590,4 +590,70 @@ static inline digitarr_t digitsort_desc(digitarr_t arr){
     return arr;
 }
 
+/*
+
+AND
+
+2 inputs: A, B
+
+bitpattern_t compute_and(bitpattern_t inputs) {
+    uint8_t a = get_bit(inputs, 1);
+    uint8_t b = get_bit(inputs, 0);
+
+    uint8_t y = a & b;
+    return y;
+}
+OR
+bitpattern_t compute_or(bitpattern_t inputs) {
+    uint8_t a = get_bit(inputs, 1);
+    uint8_t b = get_bit(inputs, 0);
+
+    uint8_t y = a | b;
+    return y;
+}
+XOR
+bitpattern_t compute_xor(bitpattern_t inputs) {
+    uint8_t a = get_bit(inputs, 1);
+    uint8_t b = get_bit(inputs, 0);
+
+    uint8_t y = a ^ b;
+    return y;
+}
+NAND
+bitpattern_t compute_nand(bitpattern_t inputs) {
+    uint8_t a = get_bit(inputs, 1);
+    uint8_t b = get_bit(inputs, 0);
+
+    uint8_t y = (uint8_t)(!(a & b));
+    return y;
+}
+NOR
+bitpattern_t compute_nor(bitpattern_t inputs) {
+    uint8_t a = get_bit(inputs, 1);
+    uint8_t b = get_bit(inputs, 0);
+
+    uint8_t y = (uint8_t)(!(a | b));
+    return y;
+}
+XNOR
+bitpattern_t compute_xnor(bitpattern_t inputs) {
+    uint8_t a = get_bit(inputs, 1);
+    uint8_t b = get_bit(inputs, 0);
+
+    uint8_t y = (uint8_t)(!(a ^ b));
+    return y;
+}
+NOT
+
+1 input: A
+
+bitpattern_t compute_not(bitpattern_t inputs) {
+    uint8_t a = get_bit(inputs, 0);
+
+    uint8_t y = (uint8_t)(!a);
+    return y;
+}
+
+*/
+
 #endif /* JBITS_IMPL */
