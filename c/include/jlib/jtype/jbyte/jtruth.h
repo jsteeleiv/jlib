@@ -247,11 +247,15 @@ typedef struct LogicDevice {
     const char *name;
     size_t input_sz;
     size_t output_sz;
-    union {
-        bigateinfo_t builtin;
-        // exprinfo_t expr;
-        ttinfo_t table;
-    } source;
+    // union {
+    //     bigateinfo_t builtin;
+    //     // exprinfo_t expr;
+    //     ttinfo_t table;
+    // } source;
+
+    const char *symbol;
+    const char *expression;
+    int gatetype;
 } lgcdev_t;
 
 typedef struct TruthTableRow {
@@ -469,5 +473,171 @@ static inline void truthtbl_print(const truthtbl_t *tt){
         printf("\n");
     }
 }
+
+const char *labels_ab[]   = { "A", "B" };
+const char *label_a[]     = { "A" };
+const char *label_y[]     = { "Y" };
+const char *fa_inputs[]   = { "A", "B", "Cin" };
+const char *fa_outputs[]  = { "Sum", "Cout" };
+
+/*
+
+LogicDevice and_device = {
+        .name = "AND Gate",
+        .input_count = 2,
+        .output_count = 1,
+        .input_labels = labels_ab,
+        .output_labels = label_y,
+        .compute = compute_and
+    };
+
+LogicDevice or_device = {
+    .name = "OR Gate",
+    .input_count = 2,
+    .output_count = 1,
+    .input_labels = labels_ab,
+    .output_labels = label_y,
+    .compute = compute_or
+};
+
+LogicDevice xor_device = {
+    .name = "XOR Gate",
+    .input_count = 2,
+    .output_count = 1,
+    .input_labels = labels_ab,
+    .output_labels = label_y,
+    .compute = compute_xor
+};
+
+LogicDevice nand_device = {
+    .name = "NAND Gate",
+    .input_count = 2,
+    .output_count = 1,
+    .input_labels = labels_ab,
+    .output_labels = label_y,
+    .compute = compute_nand
+};
+
+LogicDevice nor_device = {
+    .name = "NOR Gate",
+    .input_count = 2,
+    .output_count = 1,
+    .input_labels = labels_ab,
+    .output_labels = label_y,
+    .compute = compute_nor
+};
+
+LogicDevice xnor_device = {
+    .name = "XNOR Gate",
+    .input_count = 2,
+    .output_count = 1,
+    .input_labels = labels_ab,
+    .output_labels = label_y,
+    .compute = compute_xnor
+};
+
+LogicDevice not_device = {
+    .name = "NOT Gate",
+    .input_count = 1,
+    .output_count = 1,
+    .input_labels = label_a,
+    .output_labels = label_y,
+    .compute = compute_not
+};
+
+LogicDevice full_adder_device = {
+    .name = "Full Adder",
+    .input_count = 3,
+    .output_count = 2,
+    .input_labels = fa_inputs,
+    .output_labels = fa_outputs,
+    .compute = compute_full_adder
+};
+
+LogicDevice devices[] = {
+    and_device,
+    or_device,
+    xor_device,
+    nand_device,
+    nor_device,
+    xnor_device,
+    not_device,
+    full_adder_device
+};
+
+size_t device_count = sizeof(devices) / sizeof(devices[0]);
+
+    for (size_t i = 0; i < device_count; i++) {
+        TruthTable *tt = generate_truth_table(&devices[i]);
+        if (!tt) {
+            fprintf(stderr, "Failed to generate truth table for %s\n", devices[i].name);
+            continue;
+        }
+
+        print_truth_table(tt);
+        destroy_truth_table(tt);
+    }
+
+bitpattern_t compute_and(bitpattern_t inputs) {
+    uint8_t a = get_bit(inputs, 1);
+    uint8_t b = get_bit(inputs, 0);
+    uint8_t y = a & b;
+    return y;
+}
+
+bitpattern_t compute_or(bitpattern_t inputs) {
+    uint8_t a = get_bit(inputs, 1);
+    uint8_t b = get_bit(inputs, 0);
+    uint8_t y = a | b;
+    return y;
+}
+
+bitpattern_t compute_xor(bitpattern_t inputs) {
+    uint8_t a = get_bit(inputs, 1);
+    uint8_t b = get_bit(inputs, 0);
+    uint8_t y = a ^ b;
+    return y;
+}
+
+bitpattern_t compute_nand(bitpattern_t inputs) {
+    uint8_t a = get_bit(inputs, 1);
+    uint8_t b = get_bit(inputs, 0);
+    uint8_t y = (uint8_t)(!(a & b));
+    return y;
+}
+
+bitpattern_t compute_nor(bitpattern_t inputs) {
+    uint8_t a = get_bit(inputs, 1);
+    uint8_t b = get_bit(inputs, 0);
+    uint8_t y = (uint8_t)(!(a | b));
+    return y;
+}
+
+bitpattern_t compute_xnor(bitpattern_t inputs) {
+    uint8_t a = get_bit(inputs, 1);
+    uint8_t b = get_bit(inputs, 0);
+    uint8_t y = (uint8_t)(!(a ^ b));
+    return y;
+}
+
+bitpattern_t compute_not(bitpattern_t inputs) {
+    uint8_t a = get_bit(inputs, 0);
+    uint8_t y = (uint8_t)(!a);
+    return y;
+}
+
+bitpattern_t compute_full_adder(bitpattern_t inputs) {
+    uint8_t a   = get_bit(inputs, 2);
+    uint8_t b   = get_bit(inputs, 1);
+    uint8_t cin = get_bit(inputs, 0);
+
+    uint8_t sum  = a ^ b ^ cin;
+    uint8_t cout = (a & b) | (cin & (a ^ b));
+
+    return (bitpattern_t)((sum << 1) | cout);
+}
+
+*/
+
 
 #endif /* JTRUTH_IMPL */
