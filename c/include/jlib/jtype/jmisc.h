@@ -90,7 +90,7 @@ typedef struct BackTracker {
 typedef struct {
     error_t err;
     tmstamp_t time;
-    value_t type;
+    val_t type;
     map_t stars;
     char *omen;
     char *read;
