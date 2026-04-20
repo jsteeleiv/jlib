@@ -2,7 +2,7 @@
 #ifndef JFUT_H
 #define JFUT_H
 
-#include "../jstd/jthread.h"
+#include "../jstd/jthrd.h"
 #include "../jstd/jerr.h"
     
 typedef enum FutureStatus {

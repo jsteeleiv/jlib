@@ -1,6 +1,6 @@
 #pragma once
-#ifndef JTHREAD_H
-#define JTHREAD_H
+#ifndef jthrd_H
+#define jthrd_H
 
 #include <pthread.h>
 #include <stdbool.h>
@@ -39,9 +39,9 @@ static inline int thread_detach(thread_t *t);
 static inline int thread_self(void);
 static inline int thread_equal(thread_t *a, thread_t *b);
 
-#endif /* JTHREAD_H */
-#define JTHREAD_IMPL // #debug-mode
-#ifdef JTHREAD_IMPL
+#endif /* jthrd_H */
+#define jthrd_IMPL // #debug-mode
+#ifdef jthrd_IMPL
 
 /* mutexes */
 static inline int mutex_init(mutex_t *m){
@@ -95,15 +95,15 @@ static inline int cond_broadcast(condition_t *c){
     return pthread_cond_broadcast(&c->handle);
 }
 
-/* jthread type */
-static inline int jthread_create(thread_t *t, void *(*fn)(void *), void *arg){
+/* jthrd type */
+static inline int jthrd_create(thread_t *t, void *(*fn)(void *), void *arg){
     if (t == NULL || fn == NULL) return -1;
     return pthread_create(&t->handle, NULL, fn, arg);
 }
 
-static inline int jthread_join(thread_t *t, void **ret){
+static inline int jthrd_join(thread_t *t, void **ret){
     if (t == NULL) return -1;
     return pthread_join(t->handle, ret);
 }
 
-#endif /* JTHREAD_IMPL */
+#endif /* jthrd_IMPL */

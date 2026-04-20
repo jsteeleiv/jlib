@@ -5,7 +5,7 @@
 #include "jstd/jdbg.h"
 #include "jstd/jerr.h"
 #include "jstd/jlog.h"
-#include "jstd/jthread.h"
+#include "jstd/jthrd.h"
 #include "jstd/jtime.h"
 
 #endif /* JSTD_H */
