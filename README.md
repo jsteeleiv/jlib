@@ -28,9 +28,8 @@ The goal is not to compete with large frameworks or production-grade libraries, 
 - A proper solution to anything in comparison to modern languages
 - Guaranteed, Warrantied, Insured, Funded, Returnable, Exchangeable, or even well documented
 
-So, with that said
 
-> Welcome to my `library`
+> If BikeShedding were a `library` ...
 
 # structure
 Each language lives in it's own directory, named according to the language.
