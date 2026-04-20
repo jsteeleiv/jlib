@@ -2,6 +2,8 @@
 #ifndef JFILE_H
 #define JFILE_H
 
+#include "../jtype.h"
+
 #ifndef _WIN32
 #    define _POSIX_C_SOURCE 200809L
 #    include <unistd.h>
@@ -50,22 +52,63 @@ int closedir(DIR *dirp);
 #define FILE_STDERR 2
 
 
+typedef enum FileAccess {
+    FILE_ACC_NONE = 0,
+    FILE_ACC_READ,
+    FILE_ACC_WRITE,
+    FILE_ACC_EXEC,
+    FILE_ACC_LINK,
+    FILE_ACC_KILL,
+} fileacc_t;
+
+typedef enum FileState {
+    FILE_ST_NONE = 0,
+    FILE_ST_EXISTS,
+    FILE_ST_STAT_OK,
+    FILE_ST_PATH_OWNED,
+    FILE_ST_PATH_ABSOL,
+} filest_t;
+
+typedef enum FileValidation {
+    FILE_VALID_NONE = 0,
+    FILE_VALID_PATH,
+    FILE_VALID_BASE,
+    FILE_VALID_EXT,
+    FILE_VALID_SIZE,
+    FILE_VALID_TIME,
+    FILE_VALID_TYPE,
+    FILE_VALID_ACC,
+} filevalid_t;
+
+typedef enum FIleType {
+    FILE_TYPE_UNKNOWN = 0,
+    FILE_TYPE_STD,
+    FILE_TYPE_DIR,
+    FILE_TYPE_ASCII,
+    FILE_TYPE_SLINK,
+    FILE_TYPE_HLINK,
+    FILE_TYPE_PIPE,
+    FILE_TYPE_FIFO,
+    FILE_TYPE_LIFO,
+    FILE_TYPE_LOFI,
+    FILE_TYPE_BLOCK,
+    FILE_TYPE_SOCKET,
+} filetype_t;
+
 /*
  * File types
  */
-#define DT_UNKNOWN       0
-#define DT_FIFO          1
-#define DT_CHR           2
-#define DT_DIR           4
-#define DT_BLK           6
-#define DT_REG           8
-#define DT_LNK          10
-#define DT_SOCK         12
-#define DT_WHT          14
+#define DT_UNKNOWN 0
+#define DT_FIFO    1
+#define DT_CHR     2
+#define DT_DIR     4
+#define DT_BLK     6
+#define DT_REG     8
+#define DT_LINK    10
+#define DT_SOCK    12
+#define DT_WHT     14
 
-/*
- * Convert between stat structure types and directory types.
- */
+/* Convert between stat structure types and directory types. */
 #define IFTODT(mode)    (((mode) & 0170000) >> 12)
 #define DTTOIF(dirtype) ((dirtype) << 12)
 
@@ -75,19 +118,29 @@ typedef struct FileLocation {
     const char *file;
     const char *line;
     const char *func;
+    uint file_len;
+    uint line_len;
+    uint func_len;
 } fileloc_t;
 
 typedef struct FileInfo {
     size_t size;
-    time_t created;
-    time_t modified;
-    uint32_t mode;
-    bool exists;
+    time_t ctime;
+    time_t mtime;
+    time_t atime;
+    uint mode;
+    uint fields;
+    uint type_flg; /* file, dir, symlink, pipe, etc */
+    uint state_flg; /* exists, ok, owned, absolute, hidden, etc */
+    uint access_flg; /* read, write, execute, etc */
+    bool error;
     char *path;  // mutable 'string' for runtime changes
+    const char *base;
+    const char *ext;
 } fileinfo_t;
 
 typedef struct File {
-    fileinfo_t info;
+    fileinfo_t *info;
     fileloc_t loc;
     FILE *handle;
 } file_t;
