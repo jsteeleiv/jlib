@@ -41,4 +41,4 @@
 
 
 
-#endif
+#endif /* JLIB_IMPL */
