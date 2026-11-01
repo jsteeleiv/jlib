@@ -2,7 +2,7 @@ _MANAGED = "_jlib_managed_handler"
 _ORIGINAL_SETTINGS = {}
 
 """
-jlib.log.core
+jlib.log.logger
 
 Core logging utilities.
 

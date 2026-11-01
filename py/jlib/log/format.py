@@ -1,5 +1,5 @@
 """
-jlib.log.fmt
+jlib.log.format
 
 Reusable logging formatters.
 
