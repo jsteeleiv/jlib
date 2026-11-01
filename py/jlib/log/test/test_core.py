@@ -33,7 +33,7 @@ class TestLoggerCore(unittest.TestCase):
             getlogger("")
 
         with self.assertRaises(ValueError):
-            getlogger(None)
+            getlogger("None")
 
     def test_no_handlers_added(self):
         logger = getlogger("jlib.test.nohandlers")
