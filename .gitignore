@@ -1,17 +1,283 @@
-.vscode/
-notes/
-c/src/tests/build/*
-c/src/examples/demos/
 
-pycache/
-*.pyc
+# ============================================================
+# JLIB - Repository .gitignore
+# C | Python | Shell | Rust | Cross-Platform
+# ============================================================
 
+
+# ============================
+# PYTHON
+# ============================
+
+# Bytecode and interpreter caches
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+
+# Testing and coverage
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.tox/
+.nox/
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+
+# Packaging and distribution
+*.egg-info/
+*.egg
+pip-wheel-metadata/
+
+
+# ============================
+# C / C++
+# ============================
+
+# Object and dependency files
 *.o
-*.out
-*.a
+*.obj
+*.lo
+*.d
 
+# Static libraries
+*.a
+*.lib
+
+# Shared libraries
+*.so
+*.so.*
+*.dylib
+*.dll
+
+# Compiled executables
+*.exe
+*.out
+*.app/
+
+# Debug symbols and profiling
+*.pdb
+*.ilk
+*.idb
+*.dSYM/
+*.gcda
+*.gcno
+*.gcov
+*.profraw
+*.profdata
+
+# Compiler-generated files
+*.pch
+*.gch
+*.suo
+*.tlog/
+*.lastbuildstate
+
+# Build system output
+[Cc]make[Ff]iles/
+CMakeCache.txt
+cmake_install.cmake
+compile_commands.json
+Testing/
+autom4te.cache/
+
+# Common build directories
+build/
+Build/
+cmake-build-*/
+out/
 bin/
-dist/
+obj/
+
+
+# ============================
+# SHELL / BASH
+# ============================
+
+# ShellCheck cache, if configured
+.shellcheck-cache/
+
+# Temporary editor and script files
+*.swp
+*.swo
+*~
+*.orig
+*.rej
+
+# Script-generated temporary files
+*.tmp
+*.temp
+
+# Shell history and local environment
+.bash_history
+.zsh_history
+.python_history
+
+# Local shell configuration
+.envrc
+.direnv/
+
+
+# ============================
+# RUST (FUTURE)
+# ============================
+
+# Cargo build output
+target/
+
+# rustfmt backup files
+*.rs.bk
+
+# Keep Cargo.lock tracked for applications.
+# Decide separately for reusable libraries.
+
+
+# ============================
+# WINDOWS
+# ============================
+
+# Explorer metadata
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+Desktop.ini
+
+# Recycle Bin and system files
+$RECYCLE.BIN/
+*.stackdump
+
+# Windows shortcuts
+*.lnk
+
+
+# ============================
+# MACOS
+# ============================
 
 .DS_Store
-Thumbs.db
+.AppleDouble
+.LSOverride
+._*
+
+# Spotlight and Finder
+.Spotlight-V100/
+.Trashes/
+.fseventsd/
+.TemporaryItems/
+.VolumeIcon.icns
+
+# Network filesystem metadata
+.AppleDB
+.AppleDesktop
+Network Trash Folder/
+Temporary Items/
+
+
+# ============================
+# LINUX / UNIX
+# ============================
+
+.directory
+.Trash-*/
+.nfs*
+
+
+# ============================
+# EDITORS / IDEs
+# ============================
+
+# VS Code
+.vscode/
+
+# JetBrains IDEs
+.idea/
+*.iml
+
+# Vim
+*.swn
+*.swm
+Session.vim
+
+# Emacs
+*~
+\#*\#
+.\#*
+
+# Sublime Text workspace state
+*.sublime-workspace
+
+
+# ============================
+# SECRETS / LOCAL CONFIG
+# ============================
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Credentials and private keys
+*.pem
+*.key
+*.p12
+*.pfx
+id_rsa
+id_ed25519
+
+# Local secret files
+secrets.json
+credentials.json
+*.secret
+
+
+# ============================
+# LOGS / RUNTIME
+# ============================
+
+*.log
+*.log.*
+logs/
+
+# Process files
+*.pid
+*.pid.lock
+
+# Crash dumps
+core
+core.*
+*.core
+*.dmp
+
+
+# ============================
+# GENERAL GENERATED FILES
+# ============================
+
+# Archives and distributions
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.7z
+
+# Temporary and backup files
+*.bak
+*.backup
+*.old
+
+# Generic caches
+.cache/
+tmp/
+temp/
+
+
+# ============================================================
+# END
+# ============================================================
