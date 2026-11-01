@@ -8,7 +8,7 @@ Supports logger configuration, formatting, console and file
 output, log rotation, and managed resource cleanup.
 """
 
-from .core import getlogger, configure, shutdown
+from .log import getlogger, configure, shutdown
 from .fmt import getformatter
 from .handlers import consolehandler, filehandler
 from .rotate import sizehandler, timehandler
