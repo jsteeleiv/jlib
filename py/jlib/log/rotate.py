@@ -13,7 +13,7 @@ def _prepare(path, level, style):
     """Validate shared rotating-handler settings."""
     from pathlib import Path
     from .handlers import _level
-    from .fmt import getformatter
+    from .format import getformatter
 
     destination = Path(path)
 
@@ -119,6 +119,7 @@ def configure(
     """
     from .handlers import consolehandler, filehandler, _level
     from .rotate import sizehandler, timehandler
+    from .logger import getlogger
 
     if not isinstance(name, str) or not name.strip():
         raise ValueError("Logger name must be a non-empty string.")

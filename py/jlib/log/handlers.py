@@ -42,7 +42,7 @@ def consolehandler(level="INFO", style="simple", stream=None):
         logging.StreamHandler
     """
     import logging
-    from .fmt import getformatter
+    from .format import getformatter
 
     handler = logging.StreamHandler(stream)
     handler.setLevel(_level(level))
@@ -68,7 +68,7 @@ def filehandler(path, level="DEBUG", style="detailed",
     """
     import logging
     from pathlib import Path
-    from .fmt import getformatter
+    from .format import getformatter
 
     if mode not in ("a", "w"):
         raise ValueError(
