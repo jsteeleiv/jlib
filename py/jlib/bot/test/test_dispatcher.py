@@ -176,6 +176,34 @@ class TestDispatcher(unittest.TestCase):
         self.assertFalse(self.queue)
         self.assertEqual(self.registry.busy(), {})
 
+    def test_capability_matching(self):
+        """Dispatcher skips Workers lacking the required capability."""
+
+        class OtherWorker(TestWorker):
+            capabilities = frozenset({"scrape"})
+
+        scraper = OtherWorker(2)
+
+        context = Mock()
+        context.capture_imprint.return_value = {}
+        context.consult.return_value = {}
+        context.create_state.return_value = {}
+        context.create_experience.return_value = []
+        context.create_disposition.return_value = {}
+
+        scraper.initialize(context)
+        self.registry.register(scraper)
+
+        task = Task(8, "scrape")
+        self.queue.put(task)
+
+        result = self.dispatcher.dispatch()
+
+        self.assertEqual(result, "completed")
+        self.assertEqual(scraper.calls, [task])
+        self.assertEqual(self.worker.calls, [])
+        self.assertFalse(self.queue)
+
 
 if __name__ == "__main__":
     unittest.main()
