@@ -33,7 +33,10 @@ class TestLoggerCore(unittest.TestCase):
             getlogger("")
 
         with self.assertRaises(ValueError):
-            getlogger("None")
+            getlogger(None)  # pyright: ignore[reportArgumentType]
+
+        with self.assertRaises(ValueError):
+            getlogger("   ")
 
     def test_no_handlers_added(self):
         logger = getlogger("jlib.test.nohandlers")
