@@ -7,7 +7,7 @@ from email.message import Message
 from io import BytesIO
 from unittest.mock import patch
 
-from jlib.bot.task import Task
+from py.jlib.bot.work.task import Task
 from jlib.bot.workers.scraper import Scraper
 
 

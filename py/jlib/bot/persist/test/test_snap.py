@@ -5,8 +5,8 @@ import unittest
 
 from datetime import datetime, UTC
 
-from jlib.bot.snap import Snapshot, capture
-from jlib.bot.state import Freezer
+from py.jlib.bot.persist.snap import Snapshot, capture
+from py.jlib.bot.persist.state import Freezer
 
 
 class TestSnapshot(unittest.TestCase):

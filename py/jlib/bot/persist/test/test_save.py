@@ -6,7 +6,7 @@ import tempfile
 
 from pathlib import Path
 from unittest.mock import patch
-from jlib.bot import save
+from py.jlib.bot.persist import save
 
 
 class TestSave(unittest.TestCase):

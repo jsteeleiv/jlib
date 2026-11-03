@@ -3,7 +3,7 @@
 
 from pathlib import Path
 
-from ..task import Task
+from ..work.task import Task
 from ..worker import Worker
 
 

@@ -3,11 +3,11 @@
 
 from typing import Any
 
-from .arbiter import Arbiter
-from .executive import Executive
-from .queue import TaskQueue
-from .registry import Registry
-from .task import Task
+from ..core.arbiter import Arbiter
+from ..executive import Executive
+from ..work.queue import TaskQueue
+from ..core.registry import Registry
+from ..work.task import Task
 
 
 class Dispatcher(Executive):

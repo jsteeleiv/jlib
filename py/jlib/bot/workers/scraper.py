@@ -5,7 +5,7 @@ from html.parser import HTMLParser
 from urllib.parse import urljoin, urlsplit
 from urllib.request import Request, urlopen
 
-from ..task import Task
+from ..work.task import Task
 from ..worker import Worker
 
 

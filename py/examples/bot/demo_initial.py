@@ -1,14 +1,14 @@
 
 """Demonstrate the JLIB bot ecosystem's first task assignments."""
 
-from jlib.bot.arbiter import Arbiter
-from jlib.bot.dispatcher import Dispatcher
-from jlib.bot.forge import Forge
-from jlib.bot.gauntlet import Gauntlet
-from jlib.bot.governer import Governer
-from jlib.bot.queue import TaskQueue
-from jlib.bot.registry import Registry
-from jlib.bot.task import Task
+from py.jlib.bot.core.arbiter import Arbiter
+from py.jlib.bot.execs.dispatcher import Dispatcher
+from py.jlib.bot.core.forge import Forge
+from py.jlib.bot.core.gauntlet import Gauntlet
+from py.jlib.bot.core.governer import Governer
+from py.jlib.bot.work.queue import TaskQueue
+from py.jlib.bot.core.registry import Registry
+from py.jlib.bot.work.task import Task
 from jlib.bot.worker import Worker
 
 

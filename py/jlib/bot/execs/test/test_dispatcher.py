@@ -7,11 +7,11 @@ from concurrent.futures import ThreadPoolExecutor
 from threading import Barrier
 from unittest.mock import Mock
 
-from jlib.bot.arbiter import Arbiter
-from jlib.bot.dispatcher import Dispatcher
-from jlib.bot.queue import TaskQueue
-from jlib.bot.registry import Registry
-from jlib.bot.task import Task
+from py.jlib.bot.core.arbiter import Arbiter
+from py.jlib.bot.execs.dispatcher import Dispatcher
+from py.jlib.bot.work.queue import TaskQueue
+from py.jlib.bot.core.registry import Registry
+from py.jlib.bot.work.task import Task
 from jlib.bot.worker import Worker
 
 

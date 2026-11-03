@@ -5,7 +5,7 @@ import unittest
 
 from datetime import datetime, UTC
 
-from jlib.bot.state import Freezer, Imprint, freeze, thaw
+from py.jlib.bot.persist.state import Freezer, Imprint, freeze, thaw
 
 
 class TestState(unittest.TestCase):

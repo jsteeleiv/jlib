@@ -7,7 +7,7 @@ import unittest
 
 from pathlib import Path
 
-from jlib.bot import swap
+from py.jlib.bot.persist import swap
 
 
 class TestSwap(unittest.TestCase):

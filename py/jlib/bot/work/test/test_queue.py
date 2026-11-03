@@ -6,8 +6,8 @@ import unittest
 from concurrent.futures import ThreadPoolExecutor
 from typing import Any, cast
 
-from jlib.bot.task import Task
-from jlib.bot.queue import TaskQueue
+from py.jlib.bot.work.task import Task
+from py.jlib.bot.work.queue import TaskQueue
 
 
 class TestTaskQueue(unittest.TestCase):

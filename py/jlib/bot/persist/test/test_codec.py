@@ -6,8 +6,8 @@ import unittest
 from datetime import datetime, UTC
 from types import MappingProxyType
 
-from jlib.bot.codec import encode, decode, dumps, loads
-from jlib.bot.state import Freezer, Imprint, freeze
+from py.jlib.bot.persist.codec import encode, decode, dumps, loads
+from py.jlib.bot.persist.state import Freezer, Imprint, freeze
 
 
 class TestCodec(unittest.TestCase):

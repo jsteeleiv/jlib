@@ -5,7 +5,7 @@ import unittest
 
 from dataclasses import FrozenInstanceError
 
-from jlib.bot.task import Task
+from py.jlib.bot.work.task import Task
 
 
 class TestTask(unittest.TestCase):
