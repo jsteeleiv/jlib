@@ -8,7 +8,7 @@ from unittest.mock import Mock
 from typing import Any, cast
 
 from jlib.bot.forge import Forge
-from jlib.bot.well import Well
+from py.jlib.bot.gauntlet import Gauntlet
 from jlib.bot.worker import Worker
 from jlib.bot.registry import Registry
 
@@ -32,12 +32,12 @@ class TestRegistry(unittest.TestCase):
         context.create_experience.return_value = []
         context.create_disposition.return_value = {}
 
-        self.well = Well(context)
+        self.gauntlet = Gauntlet(context)
 
-        self.worker_a = self.well.onboard(
+        self.worker_a = self.gauntlet.onboard(
             self.forge.build(Worker)
         )
-        self.worker_b = self.well.onboard(
+        self.worker_b = self.gauntlet.onboard(
             self.forge.build(Worker)
         )
 

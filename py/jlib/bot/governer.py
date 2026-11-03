@@ -6,7 +6,7 @@ from typing import TypeVar
 from .bot import Bot
 from .worker import Worker
 from .forge import Forge
-from .well import Well
+from .gauntlet import Gauntlet
 
 
 TBot = TypeVar("TBot", bound=Bot)
@@ -16,7 +16,7 @@ class Governer:
     """
     Govern the lifecycle and construction of a JLIB bot ecosystem.
 
-    The Governer coordinates one Forge and one Well, maintaining
+    The Governer coordinates one Forge and one Gauntlet, maintaining
     centralized authority over ecosystem creation and operation.
 
     It does not directly execute tasks or manage jobs.
@@ -25,7 +25,7 @@ class Governer:
     __slots__ = (
         "_active",
         "_forge",
-        "_well",
+        "_gauntlet",
         "_registry",
         "_board",
         "_corpus",
@@ -34,18 +34,18 @@ class Governer:
     def __init__(
         self,
         forge: Forge,
-        well: Well,
+        gauntlet: Gauntlet,
     ) -> None:
         """Establish the ecosystem's construction infrastructure."""
         if not isinstance(forge, Forge):
             raise TypeError("Governer requires a Forge instance.")
 
-        if not isinstance(well, Well):
-            raise TypeError("Governer requires a Well instance.")
+        if not isinstance(gauntlet, Gauntlet):
+            raise TypeError("Governer requires a Gauntlet instance.")
 
         self._active = False
         self._forge = forge
-        self._well = well
+        self._gauntlet = gauntlet
 
         # Reserved for future ecosystem components.
         self._registry = None
@@ -67,9 +67,9 @@ class Governer:
         return self._forge
 
     @property
-    def well(self) -> Well:
-        """Return the ecosystem's Well."""
-        return self._well
+    def gauntlet(self) -> Gauntlet:
+        """Return the ecosystem's Gauntlet."""
+        return self._gauntlet
 
     # ---------------------------------------------------------
     # Lifecycle
@@ -110,6 +110,6 @@ class Governer:
         bot = self._forge.build(bot_type)
 
         if isinstance(bot, Worker):
-            self._well.onboard(bot)
+            self._gauntlet.onboard(bot)
 
         return bot

@@ -9,7 +9,7 @@ from typing import Any, cast
 from jlib.bot.bot import Bot
 from jlib.bot.worker import Worker
 from jlib.bot.forge import Forge
-from jlib.bot.well import Well
+from py.jlib.bot.gauntlet import Gauntlet
 from jlib.bot.governer import Governer
 
 
@@ -36,14 +36,14 @@ class TestGoverner(unittest.TestCase):
         }
 
         self.forge = Forge()
-        self.well = Well(self.context)
-        self.governer = Governer(self.forge, self.well)
+        self.gauntlet = Gauntlet(self.context)
+        self.governer = Governer(self.forge, self.gauntlet)
 
     def test_initialization(self):
         """Governer starts inactive with its assigned infrastructure."""
         self.assertFalse(self.governer.active)
         self.assertIs(self.governer.forge, self.forge)
-        self.assertIs(self.governer.well, self.well)
+        self.assertIs(self.governer.gauntlet, self.gauntlet)
 
     def test_lifecycle(self):
         """Governer can be started and stopped."""
@@ -100,9 +100,9 @@ class TestGoverner(unittest.TestCase):
             self.governer.create(Worker)
 
     def test_invalid_dependencies(self):
-        """Governer requires valid Forge and Well instances."""
+        """Governer requires valid Forge and Gauntlet instances."""
         with self.assertRaises(TypeError):
-            Governer(cast(Any, None), self.well)
+            Governer(cast(Any, None), self.gauntlet)
 
         with self.assertRaises(TypeError):
             Governer(self.forge, cast(Any, None))
