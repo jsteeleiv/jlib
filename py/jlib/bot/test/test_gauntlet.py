@@ -8,7 +8,7 @@ from unittest.mock import Mock
 from typing import Any, cast
 
 from jlib.bot.forge import Forge
-from jlib.bot.well import Well
+from py.jlib.bot.gauntlet import Gauntlet
 from jlib.bot.worker import Worker
 
 
@@ -37,11 +37,11 @@ class TestWell(unittest.TestCase):
             "caution": 0.5,
         }
 
-        self.well = Well(self.context)
+        self.gauntlet = Gauntlet(self.context)
 
     def test_onboard(self):
-        """The Well initializes a newly forged Worker."""
-        result = self.well.onboard(self.worker)
+        """The Gauntlet initializes a newly forged Worker."""
+        result = self.gauntlet.onboard(self.worker)
 
         self.assertTrue(result.initialized)
         self.assertEqual(
@@ -56,7 +56,7 @@ class TestWell(unittest.TestCase):
         original_id = self.worker.id
         original_born = self.worker.born
 
-        self.well.onboard(self.worker)
+        self.gauntlet.onboard(self.worker)
 
         self.assertEqual(self.worker.id, original_id)
         self.assertEqual(self.worker.born, original_born)
@@ -64,29 +64,29 @@ class TestWell(unittest.TestCase):
         self.assertEqual(self.worker.born.tzinfo, UTC)
 
     def test_returns_same_worker(self):
-        """The Well returns the original Worker instance."""
-        result = self.well.onboard(self.worker)
+        """The Gauntlet returns the original Worker instance."""
+        result = self.gauntlet.onboard(self.worker)
 
         self.assertIs(result, self.worker)
 
     def test_onboarding_once(self):
         """Workers cannot undergo onboarding more than once."""
-        self.well.onboard(self.worker)
+        self.gauntlet.onboard(self.worker)
 
         with self.assertRaises(RuntimeError):
-            self.well.onboard(self.worker)
+            self.gauntlet.onboard(self.worker)
 
     def test_invalid_worker(self):
-        """The Well rejects objects that are not Workers."""
+        """The Gauntlet rejects objects that are not Workers."""
         for invalid in (None, "Worker", 42, object()):
             with self.subTest(invalid=invalid):
                 with self.assertRaises(TypeError):
-                    self.well.onboard(cast(Any, invalid))
+                    self.gauntlet.onboard(cast(Any, invalid))
 
     def test_invalid_context(self):
-        """The Well requires a valid initialization context."""
+        """The Gauntlet requires a valid initialization context."""
         with self.assertRaises(ValueError):
-            Well(cast(Any, None))
+            Gauntlet(cast(Any, None))
 
     def test_failed_onboarding(self):
         """Failed onboarding must not mark a Worker initialized."""
@@ -95,7 +95,7 @@ class TestWell(unittest.TestCase):
         )
 
         with self.assertRaises(RuntimeError):
-            self.well.onboard(self.worker)
+            self.gauntlet.onboard(self.worker)
 
         self.assertFalse(self.worker.initialized)
         self.assertIsNone(self.worker.imprint)

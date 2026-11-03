@@ -6,11 +6,11 @@ from typing import Any
 from .worker import Worker
 
 
-class Well:
+class Gauntlet:
     """
     Prepare newly forged Workers for ecosystem participation.
 
-    The Well coordinates one-time onboarding, including the
+    The Gauntlet coordinates one-time onboarding, including the
     initial imprint, foundational knowledge, experience,
     and disposition.
 
@@ -22,7 +22,7 @@ class Well:
     def __init__(self, context: Any) -> None:
         """Establish the onboarding environment."""
         if context is None:
-            raise ValueError("Well requires an onboarding context.")
+            raise ValueError("Gauntlet requires an onboarding context.")
 
         self._context = context
 
@@ -33,7 +33,7 @@ class Well:
         Return the initialized Worker without registering it.
         """
         if not isinstance(worker, Worker):
-            raise TypeError("Well requires a Worker instance.")
+            raise TypeError("Gauntlet requires a Worker instance.")
 
         if worker.initialized:
             raise RuntimeError(
