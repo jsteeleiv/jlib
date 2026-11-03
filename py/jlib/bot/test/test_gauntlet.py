@@ -8,11 +8,11 @@ from unittest.mock import Mock
 from typing import Any, cast
 
 from jlib.bot.forge import Forge
-from py.jlib.bot.gauntlet import Gauntlet
+from jlib.bot.gauntlet import Gauntlet
 from jlib.bot.worker import Worker
 
 
-class TestWell(unittest.TestCase):
+class TestGauntlet(unittest.TestCase):
     """Tests for onboarding newly constructed Workers."""
 
     def setUp(self):
