@@ -75,8 +75,12 @@ class Dispatcher(Executive):
             selected = None
 
             for worker in self._registry.available():
-                # Never assign ordinary work to this Dispatcher.
                 if worker is self:
+                    continue
+
+                capabilities = getattr(worker, "capabilities", frozenset())
+
+                if task.action not in capabilities:
                     continue
 
                 if self._registry.reserve(worker.id, task.id):

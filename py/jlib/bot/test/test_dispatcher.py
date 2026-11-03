@@ -20,6 +20,15 @@ class TestWorker(Worker):
 
     __slots__ = ("calls", "failure")
 
+    capabilities = frozenset({
+        "inspect",
+        "process",
+        "fail",
+        "high",
+        "low",
+        "shared",
+    })
+
     def __init__(self, id: int):
         super().__init__(id)
         self.calls: list[Task] = []
