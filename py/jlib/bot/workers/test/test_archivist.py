@@ -7,7 +7,7 @@ import unittest
 from pathlib import Path
 from unittest.mock import Mock
 
-from py.jlib.bot.work.task import Task
+from jlib.bot.work.task import Task
 from jlib.bot.workers.archivist import Archivist
 
 
